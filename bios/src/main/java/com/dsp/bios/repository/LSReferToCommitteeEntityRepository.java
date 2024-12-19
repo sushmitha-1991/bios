@@ -1,6 +1,6 @@
 package com.dsp.bios.repository;
 
-import com.dsp.bios.Entity.ReferToCommittee;
+import com.dsp.bios.entity.ReferToCommittee;
 import com.dsp.bios.dto.committee.CommitteeTypeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

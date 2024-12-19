@@ -4,6 +4,7 @@ import com.dsp.bios.dto.committee.*;
 import com.dsp.bios.service.impl.CommitteeService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/committee")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class CommitteeController {
 
     private final CommitteeService committeeService;

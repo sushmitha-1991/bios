@@ -1,6 +1,6 @@
 package com.dsp.bios.repository;
 
-import com.dsp.bios.Entity.UploadBillText;
+import com.dsp.bios.entity.UploadBillText;
 import com.dsp.bios.dto.uploadBillText.UploadBillTextDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

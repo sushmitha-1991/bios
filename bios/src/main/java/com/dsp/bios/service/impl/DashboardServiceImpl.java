@@ -1,6 +1,6 @@
 package com.dsp.bios.service.impl;
 
-import com.dsp.bios.Entity.Bill;
+import com.dsp.bios.entity.Bill;
 import com.dsp.bios.repository.LSBillsViewDetailRepository;
 import com.dsp.bios.service.DashboardService;
 import lombok.AllArgsConstructor;

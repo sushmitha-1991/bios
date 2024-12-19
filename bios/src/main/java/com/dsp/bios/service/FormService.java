@@ -1,8 +1,9 @@
 package com.dsp.bios.service;
 
-import com.dsp.bios.Entity.Bill;
-import com.dsp.bios.Entity.EntryData;
+import com.dsp.bios.entity.Bill;
+import com.dsp.bios.entity.EntryData;
 import com.dsp.bios.dto.NewBillEntry.EntryDataDTO;
+import com.dsp.bios.entity.EntryData;
 import com.dsp.bios.mapper.NewEntryToBill;
 import com.dsp.bios.repository.LSBillsViewDetailRepository;
 import com.dsp.bios.repository.LSEntryDataEntityRepository;

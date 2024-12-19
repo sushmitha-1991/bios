@@ -1,6 +1,6 @@
 package com.dsp.bios.service.impl;
 
-import com.dsp.bios.Entity.UploadBillText;
+import com.dsp.bios.entity.UploadBillText;
 import com.dsp.bios.dto.uploadBillText.UploadBillTextDTO;
 import com.dsp.bios.exception.ResourceNotFoundException;
 import com.dsp.bios.repository.CodeRepo;

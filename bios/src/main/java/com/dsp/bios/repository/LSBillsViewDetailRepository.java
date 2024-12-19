@@ -1,6 +1,7 @@
 package com.dsp.bios.repository;
 
-import com.dsp.bios.Entity.Bill;
+
+import com.dsp.bios.entity.Bill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

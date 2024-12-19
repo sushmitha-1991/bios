@@ -1,7 +1,9 @@
 package com.dsp.bios.controller;
 
-import com.dsp.bios.Entity.Bill;
+
+import com.dsp.bios.entity.Bill;
 import com.dsp.bios.service.DashboardService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/dashboard")
+@SecurityRequirement(name = "bearerAuth")
 public class Dashboard {
     private final DashboardService dashboardService;
     @GetMapping("/published")

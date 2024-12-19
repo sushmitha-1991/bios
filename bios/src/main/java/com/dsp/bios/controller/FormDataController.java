@@ -3,6 +3,7 @@ package com.dsp.bios.controller;
 import com.dsp.bios.dto.NewBillEntry.EntryDataDTO;
 import com.dsp.bios.dto.NewBillEntry.SaveResponseDTO;
 import com.dsp.bios.service.FormService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/form-data")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class FormDataController {
 
 

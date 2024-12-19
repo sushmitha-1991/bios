@@ -347,25 +347,28 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
 
     private boolean doCAValidation(EntryDataDTO dto, ConstraintValidatorContext context,Boolean valid) {
 
-        if(dto.getCaNo()==null){
+        if(dto.getIsCANo() ==null ){
+            context.buildConstraintViolationWithTemplate("isCANo must Not be null")
+                    .addPropertyNode("isCANo")
+                    .addConstraintViolation();
+            return false;
+        }
+
+        if(dto.getIsCANo()  && dto.getCaNo()==null){
             context.buildConstraintViolationWithTemplate("CA Number must Not be for for this bill Type")
                     .addPropertyNode("caNo")
                     .addConstraintViolation();
             valid= false;
         }
-        if(dto.getIsCANo() ==null ){
-            context.buildConstraintViolationWithTemplate("isCANo must Not be null")
-                    .addPropertyNode("isCANo")
-                    .addConstraintViolation();
-            valid= false;
-        }
+
 
         if(dto.getIsCANo() && dto.getCaYear()==null ) {
             context.buildConstraintViolationWithTemplate("CA year must Not be null")
                     .addPropertyNode("caYear")
                     .addConstraintViolation();
             valid= false;
-        }  if(dto.getIsActNo() && dto.getCaYear()!=null  ) {
+        }
+        if(dto.getIsActNo() && dto.getCaYear()!=null  ) {
             Boolean yearValid = isYearBetween1947toCurrent(dto.getActYear(),context,"caYear",valid);
             if(!yearValid){
                 valid=yearValid;
@@ -374,18 +377,20 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
         return  valid;
     }
     private boolean doActValidation(EntryDataDTO dto, ConstraintValidatorContext context,Boolean valid) {
-        if(dto.getActNo()==null){
+
+        if( dto.getIsActNo() ==null ){
+            context.buildConstraintViolationWithTemplate("isActNo must Not be null")
+                    .addPropertyNode("isActNo")
+                    .addConstraintViolation();
+            return false;
+        }
+        if(dto.getIsActNo()  && dto.getActNo()==null){
             context.buildConstraintViolationWithTemplate("Act Number must Not be for for this bill Type")
                     .addPropertyNode("actNo")
                     .addConstraintViolation();
             valid= false;
         }
-        if(dto.getIsActNo() ==null ){
-            context.buildConstraintViolationWithTemplate("isActNo must Not be null")
-                    .addPropertyNode("isActNo")
-                    .addConstraintViolation();
-            valid= false;
-        }
+
 
         if(dto.getIsActNo() && dto.getActYear()==null ) {
             context.buildConstraintViolationWithTemplate("Act year must Not be null")
