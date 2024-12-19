@@ -70,8 +70,8 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		log.debug("Configuring SecurityFilterChain");
 
-		http.authorizeHttpRequests((authz) -> authz.requestMatchers("/bios/v3/api-docs/**", "/bios/swagger-ui/**",
-						"/bios/swagger-ui.html"
+		http.authorizeHttpRequests((authz) -> authz.requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
+						"/swagger-ui.html"
 				).permitAll().anyRequest().authenticated())
 				.csrf(AbstractHttpConfigurer::disable).authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
