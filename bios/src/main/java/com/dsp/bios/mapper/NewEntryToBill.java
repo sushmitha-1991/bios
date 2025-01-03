@@ -18,7 +18,7 @@ public interface NewEntryToBill {
     @Mapping(source = "billCategoryAbbr", target = "billCategoryAbbr")
 
     @Mapping(source = "ministryInCharge", target = "ministry")
-    @Mapping(source = "ministryInChargeAbbr", target = "ministryAbbr")
+    @Mapping(source = "ministryInChargeId", target = "ministryAbbr")
 
     @Mapping(source = "memberName", target = "memberName")
     @Mapping(source = "memberId", target = "memberId")

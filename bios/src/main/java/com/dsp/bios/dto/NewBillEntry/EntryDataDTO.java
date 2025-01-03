@@ -26,7 +26,7 @@ public class EntryDataDTO {
     private String rajSabhaSession;
 
     private String ministryInCharge;
-    private String ministryInChargeAbbr;
+    private Long ministryInChargeId;
     private String introducedBy;
 
 
@@ -85,7 +85,7 @@ public class EntryDataDTO {
     private List<LocalDate> datesOfBillTakenIntoConsideration;
 
     private LocalDate dateOfReturnInSecondHouse;
-    private LocalDate sessionNoReTurn;
+    private String sessionNoReturn;
     private LocalDate billReferredToCommitteeConsideredOn;
     private LocalDate consideredAndPassesInJtSit;
     private LocalDate reportOnSelectCommitteeConsideredOn;

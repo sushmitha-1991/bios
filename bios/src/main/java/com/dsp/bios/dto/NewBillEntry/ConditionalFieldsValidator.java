@@ -117,9 +117,9 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
     }
 
     private boolean validateMinistryInCharge(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
-        if (  dto.getMinistryInChargeAbbr() == null ) {
-            context.buildConstraintViolationWithTemplate("ministryInChargeAbbr should not be null")
-                    .addPropertyNode("ministryInChargeAbbr")
+        if (  dto.getMinistryInChargeId() == null ) {
+            context.buildConstraintViolationWithTemplate("ministryInChargeId should not be null")
+                    .addPropertyNode("ministryInChargeId")
                     .addConstraintViolation();
             valid = false;
         }
@@ -195,8 +195,8 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
 
         String houseId= dto.getBillIntroducedInHouseAbbr();
         if(houseId==null || dto.getBillIntroducedInHouse()==null ) {
-            context.buildConstraintViolationWithTemplate("Bill introducted should not be null")
-                    .addPropertyNode("billIntroducedInHouseId")
+            context.buildConstraintViolationWithTemplate("Bill introduced should not be null")
+                    .addPropertyNode("billIntroducedInHouseAbbr")
                     .addConstraintViolation();
            return false;
         }
