@@ -77,6 +77,10 @@ public class EntryDataDTO {
     private LocalDate passedDate;
     private String passedLokSabhaNo;
     private String passedSessionNo;
+    private Long passedLokSabhaNoId;
+    private Long passedSessionNoId;
+    private String passedRajyaSabhaNo;
+    private Long passedRajyaSabhaId;
 
 
 

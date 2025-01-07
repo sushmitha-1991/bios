@@ -20,7 +20,7 @@ import lombok.Data;
 public abstract class CommitteeTypeDTO {
 
     @NotNull
-    private Long committeeTypeId;
+    private String committeeTypeAbbr;
 
     @NotBlank(message = "Committee type is required")
     private String committeeName;

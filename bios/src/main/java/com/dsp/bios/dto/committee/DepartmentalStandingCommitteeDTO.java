@@ -17,7 +17,7 @@ public class DepartmentalStandingCommitteeDTO extends CommitteeTypeDTO {
     String dscName;
 
     @NotNull(message = "department committee Id is mandatory")
-    Long dscId;
+    String dscAbbr;
 
 
     @NotNull(message = "Referred on date is mandatory")

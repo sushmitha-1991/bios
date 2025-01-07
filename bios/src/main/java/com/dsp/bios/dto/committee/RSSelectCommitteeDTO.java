@@ -11,5 +11,5 @@ import java.time.LocalDate;
 public class RSSelectCommitteeDTO extends CommitteeTypeDTO {
 
     @NotNull(message = "Motion for reference date is mandatory")
-    LocalDate rsdcMotionForReferenceDate;
+    LocalDate rsscMotionForReferenceDate;
 }
