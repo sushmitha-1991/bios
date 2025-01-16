@@ -35,5 +35,10 @@ public class FormService {
         return  entryData.getBillId();
     }
 
+    @Transactional(readOnly = true)
+    public EntryDataDTO getData(Long id){
+        return entryRepo.getReferenceById(id).getEntryData();
+    }
+
 
 }

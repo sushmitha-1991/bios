@@ -1,10 +1,13 @@
 package com.dsp.bios.controller;
 
 
+import com.dsp.bios.dto.uploadBillText.UploadBillTextDTO;
 import com.dsp.bios.entity.Bill;
+import com.dsp.bios.response.GenericResponse;
 import com.dsp.bios.service.DashboardService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,13 +22,21 @@ import java.util.List;
 public class Dashboard {
     private final DashboardService dashboardService;
     @GetMapping("/published")
-    ResponseEntity<List<Bill>> getPublished() {
-         List<Bill> bills= dashboardService.getPushblished();
-         return ResponseEntity.ok(bills);
+    ResponseEntity<GenericResponse<List<Bill>>> getPublished() {
+        GenericResponse<List<Bill>> response =new GenericResponse<>();
+        response.setData( dashboardService.getPushblished() );
+        response.setSuccess(Boolean.TRUE);
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("SUCCESS");
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/drafts")
-    ResponseEntity<List<Bill>> getDrafts() {
-        List<Bill> bills=   dashboardService.getDrafts();
-        return ResponseEntity.ok(bills);
+    ResponseEntity<GenericResponse<List<Bill>>> getDrafts() {
+        GenericResponse<List<Bill>> response =new GenericResponse<>();
+        response.setData(  dashboardService.getDrafts());
+        response.setSuccess(Boolean.TRUE);
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("SUCCESS");
+        return ResponseEntity.ok(response);
     }
 }

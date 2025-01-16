@@ -9,6 +9,7 @@ package com.dsp.bios.exception;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,6 +21,13 @@ import com.dsp.bios.response.GenericResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<GenericResponse<Void>> handleEntityNotFoundExceptionException(EntityNotFoundException ex) {
+		GenericResponse<Void> response = new GenericResponse<>(HttpStatus.NOT_FOUND.value(), false, ex.getMessage(),
+				null);
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<GenericResponse<Void>> handleResourceNotFoundException(ResourceNotFoundException ex) {
