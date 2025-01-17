@@ -47,4 +47,15 @@ public class FormDataController {
 
     }
 
+
+    @PostMapping("/{id}")
+    public ResponseEntity<GenericResponse<Void>> createBillEntry(@PathVariable(name="id") Long id, @RequestBody @Valid EntryDataDTO formDataDetails) {
+        formService.update(id,formDataDetails);
+        GenericResponse<Void>  respBody= new GenericResponse<>();
+        respBody.setSuccess(Boolean.TRUE);
+        respBody.setStatusCode(HttpStatus.OK.value());
+        respBody.setMessage("SUCCESS");
+        return ResponseEntity.status(HttpStatus.OK).body(respBody);
+    }
+
 }

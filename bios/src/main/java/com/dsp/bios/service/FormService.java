@@ -41,4 +41,19 @@ public class FormService {
     }
 
 
+    public void update(Long id, EntryDataDTO dto) {
+        Bill billView =  mapper.entryDataDTOtoBill(dto);
+        billView.setIsDraft(false);
+        billView.setId(id);
+
+        billsRepo.save(billView);
+
+
+        EntryData entryData=new EntryData();
+        entryData.setBillId(id);
+        entryData.setEntryData(dto);
+        entryRepo.save(entryData);
+
+
+    }
 }
