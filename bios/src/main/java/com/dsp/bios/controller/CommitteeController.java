@@ -30,7 +30,7 @@ public class CommitteeController {
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("SUCCESS");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/{id}")
     public ResponseEntity<GenericResponse<CommitteeTypeDTO>> updateCommittedData(@PathVariable Long id){
