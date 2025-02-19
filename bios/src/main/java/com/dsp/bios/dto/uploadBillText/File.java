@@ -11,5 +11,7 @@ public class File{
     private String language;
     @NotNull(message = "file UUID should not be null")
     private String fileUUID;
+    private String fileName;
+
 }
 
