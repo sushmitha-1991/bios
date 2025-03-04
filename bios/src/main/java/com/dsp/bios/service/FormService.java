@@ -8,6 +8,7 @@ import com.dsp.bios.mapper.NewEntryToBill;
 import com.dsp.bios.repository.LSBillsViewDetailRepository;
 import com.dsp.bios.repository.LSEntryDataEntityRepository;
 import com.dsp.bios.repository.LSUploadBillTextEntityRepository;
+import com.dsp.bios.util.UserUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +21,14 @@ public class FormService {
     private final LSEntryDataEntityRepository entryRepo;
     private final LSUploadBillTextEntityRepository billTextRepo;
     private final NewEntryToBill mapper;
+    private final UserUtils userUtils;
 
 
 
    @Transactional
     public Long save(EntryDataDTO dto) {
         Bill billView =  mapper.entryDataDTOtoBill(dto);
+        billView.setHouseId(userUtils.getHouseId());
         billView.setIsDraft(false);
        billView= billsRepo.save(billView);
        EntryData entryData=new EntryData();
@@ -45,7 +48,7 @@ public class FormService {
         Bill billView =  mapper.entryDataDTOtoBill(dto);
         billView.setIsDraft(false);
         billView.setId(id);
-
+        billView.setHouseId(userUtils.getHouseId());
         billsRepo.save(billView);
 
 

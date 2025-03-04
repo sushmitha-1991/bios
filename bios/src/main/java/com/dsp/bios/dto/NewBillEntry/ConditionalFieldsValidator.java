@@ -83,12 +83,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
                     .addConstraintViolation();
             valid = false;
         }
-        if (  dto.getRemarks() == null ) {
-            context.buildConstraintViolationWithTemplate("remarks should not be null")
-                    .addPropertyNode("remarks")
-                    .addConstraintViolation();
-            valid = false;
-        }
         if (  dto.getBillStatusAbbr() == null ) {
             context.buildConstraintViolationWithTemplate("billStatusAbbr should not be null")
                     .addPropertyNode("billStatusAbbr")
@@ -100,12 +94,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
                     .addPropertyNode("dateOfIntroduction")
                     .addConstraintViolation();
             valid = false;
-        }
-        if (  dto.getDatesOfBillTakenIntoConsideration() == null    ) {
-            context.buildConstraintViolationWithTemplate("datesOfBillTakenIntoConsideration should not be null")
-                    .addPropertyNode("datesOfBillTakenIntoConsideration")
-                    .addConstraintViolation();
-            return false;
         }
         if (dto.getDatesOfBillTakenIntoConsideration().isEmpty()) {
             context.buildConstraintViolationWithTemplate("at least one datesOfBillTakenIntoConsideration should not be present")

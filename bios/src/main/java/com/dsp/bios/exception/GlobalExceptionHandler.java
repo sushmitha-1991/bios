@@ -63,4 +63,11 @@ public class GlobalExceptionHandler {
 
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
+
+	@ExceptionHandler(BadRequest.class)
+	public ResponseEntity<GenericResponse<Void>> handleBadRequest(BadRequest ex) {
+		GenericResponse<Void> response = new GenericResponse<>(HttpStatus.BAD_REQUEST.value(),  false, ex.getMessage(),
+				null);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
 }

@@ -1,7 +1,6 @@
 package com.dsp.bios.controller;
 
 
-import com.dsp.bios.dto.uploadBillText.UploadBillTextDTO;
 import com.dsp.bios.entity.Bill;
 import com.dsp.bios.response.GenericResponse;
 import com.dsp.bios.service.DashboardService;
@@ -24,7 +23,7 @@ public class Dashboard {
     @GetMapping("/published")
     ResponseEntity<GenericResponse<List<Bill>>> getPublished() {
         GenericResponse<List<Bill>> response =new GenericResponse<>();
-        response.setData( dashboardService.getPushblished() );
+        response.setData( dashboardService.getPublished() );
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("SUCCESS");

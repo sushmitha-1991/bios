@@ -35,5 +35,5 @@ public class Bill extends Auditable {
     private String rajSabhaSessionNumber;
     private Long rajSabhaSessionNumberId;
     private Boolean isDraft;
-
+    private Long houseId;
 }

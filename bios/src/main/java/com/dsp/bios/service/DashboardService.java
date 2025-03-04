@@ -5,7 +5,7 @@ import com.dsp.bios.entity.Bill;
 import java.util.List;
 
 public interface DashboardService {
-    List<Bill> getPushblished();
+    List<Bill> getPublished();
 
     List<Bill> getDrafts();
 }
