@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @AllArgsConstructor
 public class FormService {
@@ -47,6 +49,10 @@ public class FormService {
         EntryDataDTO dto= entryRepo.getReferenceById(id).getEntryData();
 
         if(Boolean.TRUE.equals(dto.getRadioC())){
+            dto.setRadioA(null);
+            dto.setRadioB(null);
+        }
+        if(Boolean.TRUE.equals(dto.getRadioB()) && Boolean.TRUE.equals(dto.getRadioA()) ) {
             dto.setRadioA(null);
             dto.setRadioB(null);
         }
