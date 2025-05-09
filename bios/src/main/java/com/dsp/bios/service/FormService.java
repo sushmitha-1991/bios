@@ -33,6 +33,10 @@ public class FormService {
        billView= billsRepo.save(billView);
        EntryData entryData=new EntryData();
        entryData.setBillId(billView.getId());
+       if(Boolean.TRUE.equals(dto.getRadioC())){
+           dto.setRadioA(Boolean.TRUE);
+           dto.setRadioB(Boolean.TRUE);
+       }
         entryData.setEntryData(dto);
        entryData=entryRepo.save(entryData);
         return  entryData.getBillId();
@@ -40,7 +44,13 @@ public class FormService {
 
     @Transactional(readOnly = true)
     public EntryDataDTO getData(Long id){
-        return entryRepo.getReferenceById(id).getEntryData();
+        EntryDataDTO dto= entryRepo.getReferenceById(id).getEntryData();
+
+        if(Boolean.TRUE.equals(dto.getRadioC())){
+            dto.setRadioA(null);
+            dto.setRadioB(null);
+        }
+        return dto;
     }
 
 
@@ -55,6 +65,10 @@ public class FormService {
         EntryData entryData=new EntryData();
         entryData.setBillId(id);
         entryData.setEntryData(dto);
+        if(Boolean.TRUE.equals(dto.getRadioC())){
+            dto.setRadioA(Boolean.TRUE);
+            dto.setRadioB(Boolean.TRUE);
+        }
         entryRepo.save(entryData);
 
 

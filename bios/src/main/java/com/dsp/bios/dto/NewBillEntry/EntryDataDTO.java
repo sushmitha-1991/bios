@@ -61,6 +61,7 @@ public class EntryDataDTO {
 
     private Boolean radioA;
     private Boolean radioB;
+    private Boolean radioC;
 
     private String billStatusAbbr;
 
