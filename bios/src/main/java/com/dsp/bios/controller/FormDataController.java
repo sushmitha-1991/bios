@@ -1,7 +1,7 @@
 package com.dsp.bios.controller;
 
-import com.dsp.bios.dto.NewBillEntry.EntryDataDTO;
-import com.dsp.bios.dto.NewBillEntry.SaveResponseDTO;
+import com.dsp.bios.dto.newbillentry.EntryDataDTO;
+import com.dsp.bios.dto.newbillentry.SaveResponseDTO;
 import com.dsp.bios.response.GenericResponse;
 import com.dsp.bios.service.FormService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
