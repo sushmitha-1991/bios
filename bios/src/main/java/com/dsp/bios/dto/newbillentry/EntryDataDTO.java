@@ -1,4 +1,4 @@
-package com.dsp.bios.dto.NewBillEntry;
+package com.dsp.bios.dto.newbillentry;
 
 
 import jakarta.validation.Valid;
@@ -32,7 +32,7 @@ public class EntryDataDTO {
 
     private String memberName;
     private Long memberId;
-    private boolean isExMember;
+    private Boolean exMember;
 
 
     private String billCategory;

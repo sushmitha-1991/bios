@@ -1,7 +1,7 @@
 package com.dsp.bios.dto;
 
 
-import com.dsp.bios.dto.NewBillEntry.EntryDataDTO;
+import com.dsp.bios.dto.newbillentry.EntryDataDTO;
 import com.dsp.bios.dto.uploadBillText.UploadBillTextDTO;
 import jakarta.validation.Valid;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.dsp.bios.dto.NewBillEntry;
+package com.dsp.bios.dto.newbillentry;
 
 import lombok.Builder;
 import lombok.Data;

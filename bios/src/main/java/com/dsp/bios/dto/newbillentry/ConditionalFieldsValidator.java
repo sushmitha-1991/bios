@@ -1,6 +1,6 @@
-package com.dsp.bios.dto.NewBillEntry;
+package com.dsp.bios.dto.newbillentry;
 
-import com.dsp.bios.dto.NewBillEntry.Contants.Contants;
+import com.dsp.bios.dto.newbillentry.contants.Contants;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -77,12 +77,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
                     .addConstraintViolation();
             valid = false;
         }
-        if (  dto.getFileNo() == null ) {
-            context.buildConstraintViolationWithTemplate("fileNo should not be null")
-                    .addPropertyNode("fileNo")
-                    .addConstraintViolation();
-            valid = false;
-        }
         if (  dto.getBillStatusAbbr() == null ) {
             context.buildConstraintViolationWithTemplate("billStatusAbbr should not be null")
                     .addPropertyNode("billStatusAbbr")
@@ -94,12 +88,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
                     .addPropertyNode("dateOfIntroduction")
                     .addConstraintViolation();
             valid = false;
-        }
-        if (dto.getDatesOfBillTakenIntoConsideration().isEmpty()) {
-            context.buildConstraintViolationWithTemplate("at least one datesOfBillTakenIntoConsideration should not be present")
-                    .addPropertyNode("datesOfBillTakenIntoConsideration")
-                    .addConstraintViolation();
-            return false;
         }
         return valid;
     }
@@ -116,19 +104,19 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
 
     private boolean validateBillStatus(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
         if(dto.getPendingStatusAbbr()!=null){
-            if(dto.getBillStatusAbbr() == Contants.PENDING_BILL_STATUS_ABBR){
+            if( Contants.PENDING_BILL_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
                 valid = validatePendingBillStatus(dto, context, valid);
             }
-            if(dto.getBillStatusAbbr() == Contants.WITHDRAW_STATUS_ABBR){
+            if(Contants.WITHDRAW_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
                 valid = validateWithdrawBillStatus(dto, context, valid);
             }
-            if(dto.getBillStatusAbbr() == Contants.NEGATIVED_STATUS_ABBR){
+            if(Contants.NEGATIVED_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
                 valid = validateNegativedBillStatus(dto, context, valid);
             }
-            if(dto.getBillStatusAbbr() == Contants.ASSENTED_STATUS_ABBR){
+            if(Contants.ASSENTED_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
                 valid = validateAssentedBillStatus(dto, context, valid);
             }
-            if(dto.getBillStatusAbbr() == Contants.PASSED_STATUS_ABBR){
+            if(Contants.PASSED_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
                 valid = validatePassedBillStatus(dto, context, valid);
             }
         }
@@ -198,11 +186,11 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
         }
         else {
 
-            if (dto.getBillIntroducedInHouseAbbr() == Contants.LOK_SABHA_HOUSE_ABBR) {
+            if (Contants.LOK_SABHA_HOUSE_ABBR.equalsIgnoreCase(dto.getBillIntroducedInHouseAbbr())) {
                 valid = validateLokSabhaHouseData(dto, context, valid);
             }
 
-            if (dto.getBillIntroducedInHouseAbbr() == Contants.RAJ_SABHA_HOUSE_ABBR ) {
+            if (Contants.RAJ_SABHA_HOUSE_ABBR.equalsIgnoreCase(dto.getBillIntroducedInHouseAbbr()) ) {
                 valid = validateRajyaSabhaHouseData(dto, context, valid);
             }
         }
@@ -249,23 +237,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
 
             context.buildConstraintViolationWithTemplate("passedDate must not be for for this Pending Status Type")
                     .addPropertyNode("passedDate")
-                    .addConstraintViolation();
-            valid = false;
-        }
-        if(dto.getPassedLokSabhaNo()==null) {
-
-
-            context.buildConstraintViolationWithTemplate("passedLokSabhaNo   must not be for for this Pending Status Type")
-                    .addPropertyNode("passedLokSabhaNo")
-                    .addConstraintViolation();
-            valid = false;
-        }
-
-        if(dto.getPassedSessionNo()==null) {
-
-
-            context.buildConstraintViolationWithTemplate("passedSessionNo must not be for for this Pending Status Type")
-                    .addPropertyNode("passedSessionNo")
                     .addConstraintViolation();
             valid = false;
         }
@@ -372,7 +343,7 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
                     .addConstraintViolation();
             return false;
         }
-        if(dto.getIsActNo()  && dto.getActNo()==null){
+        if(dto.getIsActNo() && dto.getActNo()==null){
             context.buildConstraintViolationWithTemplate("Act Number must Not be for for this bill Type")
                     .addPropertyNode("actNo")
                     .addConstraintViolation();
@@ -395,7 +366,7 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
         return  valid;
     }
 
-    private static boolean isYearBetween1947toCurrent(Long year, ConstraintValidatorContext context,String fieldName,Boolean valid) {
+    private boolean isYearBetween1947toCurrent(Long year, ConstraintValidatorContext context,String fieldName,Boolean valid) {
         int currentYear = Year.now().getValue();
         if (year < 1947 || year > currentYear) {
             context.buildConstraintViolationWithTemplate("The year must be between 1947 and the current year")

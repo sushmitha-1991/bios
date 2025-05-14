@@ -1,15 +1,16 @@
 package com.dsp.bios.service.impl;
 
-import com.dsp.bios.entity.ReferToCommittee;
 import com.dsp.bios.dto.committee.CommitteeTypeDTO;
+import com.dsp.bios.entity.ReferToCommittee;
 import com.dsp.bios.repository.LSReferToCommitteeEntityRepository;
+import com.dsp.bios.service.CommitteeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
-public class CommitteeService {
+public class CommitteeServiceImpl implements CommitteeService {
 
 
 

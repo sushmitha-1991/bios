@@ -1,6 +1,6 @@
 package com.dsp.bios.entity;
 
-import com.dsp.bios.dto.NewBillEntry.EntryDataDTO;
+import com.dsp.bios.dto.newbillentry.EntryDataDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

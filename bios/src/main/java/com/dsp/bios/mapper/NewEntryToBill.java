@@ -1,6 +1,6 @@
 package com.dsp.bios.mapper;
 
-import com.dsp.bios.dto.NewBillEntry.EntryDataDTO;
+import com.dsp.bios.dto.newbillentry.EntryDataDTO;
 import com.dsp.bios.entity.Bill;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;

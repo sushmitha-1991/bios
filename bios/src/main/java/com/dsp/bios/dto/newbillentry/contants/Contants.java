@@ -1,4 +1,4 @@
-package com.dsp.bios.dto.NewBillEntry.Contants;
+package com.dsp.bios.dto.newbillentry.contants;
 
 public class Contants {
     public static final String RAJ_SABHA_HOUSE_ABBR = "RS";

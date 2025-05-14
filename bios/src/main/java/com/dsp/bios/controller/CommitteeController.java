@@ -1,9 +1,8 @@
 package com.dsp.bios.controller;
 
 import com.dsp.bios.dto.committee.*;
-import com.dsp.bios.entity.Bill;
 import com.dsp.bios.response.GenericResponse;
-import com.dsp.bios.service.impl.CommitteeService;
+import com.dsp.bios.service.CommitteeService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/committee")
