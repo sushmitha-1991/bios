@@ -13,8 +13,7 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
     private final List<String> actValidation=List.of(
             Contants.ORDINARY_BILL_ABBR,
             Contants.FINANCIAL_BILL_ABBR,
-            Contants.MONEY_BILL_ABBR,
-            Contants.ORDINANCE_REPLACING_BILL_ABBR);
+            Contants.MONEY_BILL_ABBR);
     private final List<String> caValidation=List.of(
             Contants.CONSTITUTIONAL_AMENDMENT_BILL_ABBR);
 
@@ -26,7 +25,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
     @Override
     public boolean isValid(EntryDataDTO dto, ConstraintValidatorContext context) {
         boolean valid=true;
-
         valid = validateHouseData(dto, context, valid);
         valid = validateMinistryInCharge(dto, context, valid);
         valid = validateIntrodudedBy(dto, context, valid);
@@ -35,14 +33,44 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
         if (dto.getBillYear() != null) {
             valid = isYearBetween1947toCurrent(dto.getBillYear(), context, "billYear",valid);
         }
-        if(actValidation.contains(dto.getBillStatusAbbr())){
+        if(actValidation.contains(dto.getBillCategoryAbbr())){
             valid=doActValidation(dto,context,valid);
         }
-        if(caValidation.contains(dto.getBillStatusAbbr())){
+        if(caValidation.contains(dto.getBillCategoryAbbr())){
             valid=doCAValidation(dto,context,valid);
         }
         valid = validateRadioABForFinanceBill(dto, context, valid);
-        valid = validateBillStatus(dto, context, valid);
+        valid = validateWeatherOrdinanceReplacingBill(dto, context, valid);
+        return valid;
+    }
+
+    private boolean validateWeatherOrdinanceReplacingBill(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
+        if(Boolean.TRUE.equals(dto.getWeatherOrdinanceReplacingBill())){
+            if ( dto.getTitleOfOrdinance() == null ) {
+                context.buildConstraintViolationWithTemplate("Title of Ordinance A  must not be for for this bill Type")
+                        .addPropertyNode("titleOfOrdinance")
+                        .addConstraintViolation();
+                valid =false;
+            }
+            if ( dto.getDateOfPromulgation() == null ) {
+                context.buildConstraintViolationWithTemplate("Date Of Promulgation must not be for for this bill Type")
+                        .addPropertyNode("dateOfPromulgation")
+                        .addConstraintViolation();
+                valid =false;
+            }
+            if ( dto.getOrdinanceNumber() == null ) {
+                context.buildConstraintViolationWithTemplate("OrdinanceNumber  must not be for for this bill Type")
+                        .addPropertyNode("ordinanceNumber")
+                        .addConstraintViolation();
+                valid =false;
+            }
+            if ( dto.getOrdinanceYear() == null ) {
+                context.buildConstraintViolationWithTemplate("OrdinanceYear must not be for for this bill Type")
+                        .addPropertyNode("ordinanceYear")
+                        .addConstraintViolation();
+                valid =false;
+            }
+        }
         return valid;
     }
 
@@ -77,12 +105,7 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
                     .addConstraintViolation();
             valid = false;
         }
-        if (  dto.getBillStatusAbbr() == null ) {
-            context.buildConstraintViolationWithTemplate("billStatusAbbr should not be null")
-                    .addPropertyNode("billStatusAbbr")
-                    .addConstraintViolation();
-            valid = false;
-        }
+
         if (  dto.getDateOfIntroduction() == null ) {
             context.buildConstraintViolationWithTemplate("dateOfIntroduction should not be null")
                     .addPropertyNode("dateOfIntroduction")
@@ -98,27 +121,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
                     .addPropertyNode("ministryInChargeId")
                     .addConstraintViolation();
             valid = false;
-        }
-        return valid;
-    }
-
-    private boolean validateBillStatus(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
-        if(dto.getPendingStatusAbbr()!=null){
-            if( Contants.PENDING_BILL_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
-                valid = validatePendingBillStatus(dto, context, valid);
-            }
-            if(Contants.WITHDRAW_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
-                valid = validateWithdrawBillStatus(dto, context, valid);
-            }
-            if(Contants.NEGATIVED_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
-                valid = validateNegativedBillStatus(dto, context, valid);
-            }
-            if(Contants.ASSENTED_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
-                valid = validateAssentedBillStatus(dto, context, valid);
-            }
-            if(Contants.PASSED_STATUS_ABBR.equalsIgnoreCase(dto.getBillStatusAbbr())){
-                valid = validatePassedBillStatus(dto, context, valid);
-            }
         }
         return valid;
     }
@@ -223,87 +225,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
         return valid;
     }
 
-    private boolean validatePassedBillStatus(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
-        if(dto.getPassedIn()==null) {
-
-            context.buildConstraintViolationWithTemplate("passedIn must not be for for this Pending Status Type")
-                    .addPropertyNode("passedIn")
-                    .addConstraintViolation();
-            valid = false;
-        }
-
-        if(dto.getPassedDate()==null) {
-
-
-            context.buildConstraintViolationWithTemplate("passedDate must not be for for this Pending Status Type")
-                    .addPropertyNode("passedDate")
-                    .addConstraintViolation();
-            valid = false;
-        }
-        return valid;
-    }
-
-    private boolean validateAssentedBillStatus(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
-        if(dto.getDateOfAssented()==null) {
-
-
-            context.buildConstraintViolationWithTemplate("dateOfAssented must not be for for this Pending Status Type")
-                    .addPropertyNode("dateOfAssented")
-                    .addConstraintViolation();
-            valid = false;
-        }
-
-
-        return valid;
-    }
-
-    private boolean validateNegativedBillStatus(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
-        if(dto.getDateOfNegatived()==null) {
-
-
-            context.buildConstraintViolationWithTemplate("dateOfNegatived  must not be for for this Pending Status Type")
-                    .addPropertyNode("dateOfNegatived")
-                    .addConstraintViolation();
-            valid = false;
-        }
-
-
-        return valid;
-    }
-
-    private boolean validateWithdrawBillStatus(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
-        if(dto.getDateOfWithdrawn()==null) {
-
-
-            context.buildConstraintViolationWithTemplate("date of withdrawn  must not be for for this Pending Status Type")
-                    .addPropertyNode("dateOfWithdrawn")
-                    .addConstraintViolation();
-            valid = false;
-        }
-        return valid;
-    }
-
-    private static boolean validatePendingBillStatus(EntryDataDTO dto, ConstraintValidatorContext context, boolean valid) {
-        if(dto.getPendingStatus()==null) {
-
-
-            context.buildConstraintViolationWithTemplate("Pending Status  must not be for for this Pending Status Type")
-                    .addPropertyNode("pendingStatus")
-                    .addConstraintViolation();
-            valid = false;
-        }
-
-        if(dto.getPendingStatusDate()==null) {
-
-
-            context.buildConstraintViolationWithTemplate("Pending Status Date must not be for for this Pending Status Type")
-                    .addPropertyNode("pendingStatusDate")
-                    .addConstraintViolation();
-            valid = false;
-        }
-        return valid;
-    }
-
     private boolean doCAValidation(EntryDataDTO dto, ConstraintValidatorContext context,Boolean valid) {
 
         if(dto.getIsCANo() ==null ){
@@ -376,4 +297,6 @@ public class ConditionalFieldsValidator implements ConstraintValidator<ValidCond
         }
         return valid;
     }
+
+
 }

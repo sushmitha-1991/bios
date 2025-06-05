@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @Valid
 @ValidConditionalFields
-
 public class EntryDataDTO {
 
 
@@ -63,27 +62,6 @@ public class EntryDataDTO {
     private Boolean radioB;
     private Boolean radioC;
 
-    private String billStatusAbbr;
-
-    private String billStatus;
-
-    private String pendingStatus;
-    private String pendingStatusAbbr;
-
-    private LocalDate pendingStatusDate;
-    private LocalDate dateOfWithdrawn;
-    private LocalDate dateOfNegatived;
-    private LocalDate dateOfAssented;
-    private String passedIn;
-    private LocalDate passedDate;
-    private String passedLokSabhaNo;
-    private String passedSessionNo;
-    private Long passedLokSabhaNoId;
-    private Long passedSessionNoId;
-    private String passedRajyaSabhaNo;
-    private Long passedRajyaSabhaId;
-
-
 
     private LocalDate dateOfIntroduction;
 
@@ -100,7 +78,11 @@ public class EntryDataDTO {
     private LocalDate amendmentMadeBy2ndHouseConsideredOn;
     private LocalDate dateOfPassingInOriginHouse;
 
-
+    private Boolean weatherOrdinanceReplacingBill;
+    private String titleOfOrdinance;
+    private LocalDate dateOfPromulgation;
+    private String ordinanceNumber;
+    private String ordinanceYear;
 
 }
 

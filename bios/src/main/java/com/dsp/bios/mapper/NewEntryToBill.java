@@ -25,8 +25,6 @@ public interface NewEntryToBill {
 
     @Mapping(source = "dateOfIntroduction", target = "dateOfIntroduction")
 
-    @Mapping(source = "billStatus", target = "status")
-    @Mapping(source = "billStatusAbbr", target = "statusAbbr")
 
     @Mapping(source = "lokSabhaNumber", target = "lokSabhaNumber")
     @Mapping(source = "lokSabhaNumberId", target = "lokSabhaNumberId")

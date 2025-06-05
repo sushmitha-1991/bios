@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface LSBillsViewDetailRepository extends JpaRepository<Bill, Long> {
 
-    @Query("select b from Bill b where b.isDraft=:draft and b.houseId=:houseId")
-    List<Bill> findByIsDraft(boolean draft, Long houseId);
+    @Query("select b from Bill b where b.isDraft=:draft")
+    List<Bill> findByIsDraft(boolean draft);
 //    List<Bill> findByIsDraft(boolean isDraft);
 }

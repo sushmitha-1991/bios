@@ -14,14 +14,11 @@ import java.util.List;
 public class DashboardServiceImpl implements DashboardService {
 
     private final LSBillsViewDetailRepository billsView;
-    private final UserUtils userUtils;
     public List<Bill> getPublished(){
-        Long houseId=userUtils.getHouseId();
-        return billsView.findByIsDraft(false,houseId).stream().sorted(Comparator.comparing(Bill::getId).reversed()).toList();
+        return billsView.findByIsDraft(false).stream().sorted(Comparator.comparing(Bill::getId).reversed()).toList();
     }
 
     public List<Bill> getDrafts(){
-        Long houseId=userUtils.getHouseId();
-        return billsView.findByIsDraft(true,houseId);
+        return billsView.findByIsDraft(true);
     }
 }
