@@ -13,5 +13,4 @@ public interface LSBillsViewDetailRepository extends JpaRepository<Bill, Long> {
 
     @Query("select b from Bill b where b.isDraft=:draft")
     List<Bill> findByIsDraft(boolean draft);
-//    List<Bill> findByIsDraft(boolean isDraft);
 }
