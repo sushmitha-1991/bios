@@ -59,14 +59,22 @@ public class StatusServiceImpl implements StatusService {
 
         for (PendingStatusDTO dto : pendingStatusDTOs) {
 
-            PendingStatus pendingStatus = pendingStatusRepository.findById(dto.getId())
-                    .orElse(new PendingStatus());
-
+            PendingStatus pendingStatus ;
+            if(dto.getId()==null){
+                pendingStatus=new PendingStatus();
+            }else {
+                pendingStatus=
+                pendingStatusRepository.findById(dto.getId())
+                        .orElse(new PendingStatus());
+            }
             pendingStatus.setBillId(billId);
             pendingStatus.setPendingStatusId(dto.getPendingStatusId());
             pendingStatus.setPendingStatusDate(dto.getPendingStatusDate());
-
+            pendingStatus.setIsActive(Boolean.TRUE);
             pendingStatusRepository.save(pendingStatus);
+            if(!requestPendingStatusIds.contains(pendingStatus.getId())){
+                requestPendingStatusIds.add(pendingStatus.getId());
+            }
         }
         pendingStatusRepository.deactivatePendingStatuses(billId, requestPendingStatusIds);
         Long passedCodeId=codeRepo.getIdByAbbr("BILL_STATUS_PENDING");
@@ -80,6 +88,7 @@ public class StatusServiceImpl implements StatusService {
         billStatus.setBillStatusId(passedCodeId);
         if(maxPassedDateOpt.isPresent()){
             billStatus.setStatusDate(maxPassedDateOpt.get());
+            billStatus.setIsActive(Boolean.TRUE);
         } else {
             billStatus.setIsActive(Boolean.FALSE);
         }

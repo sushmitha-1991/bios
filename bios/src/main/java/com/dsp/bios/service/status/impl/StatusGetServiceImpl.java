@@ -19,11 +19,22 @@ public class StatusGetServiceImpl implements StatusGetService  {
     @Value("${main.status}")
     private String mainStatusSQL;
 
+    @Value("${pending.status}")
+    private String pendingStatusSQL;
+
     @Override
     public List<Map<String, Object>> getMainStatus(Long billId,String locale) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("billId",billId);
         parameters.addValue("locale",locale);
         return namedParameterJdbcTemplate.queryForList(mainStatusSQL, parameters);
+    }
+
+    @Override
+    public List<Map<String, Object>> getPendingStatus(Long billId,String locale) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("billId",billId);
+        parameters.addValue("locale",locale);
+        return namedParameterJdbcTemplate.queryForList(pendingStatusSQL, parameters);
     }
 }

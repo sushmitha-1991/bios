@@ -60,7 +60,7 @@ public class StatusController {
 
 
     @GetMapping("/main/{billId}")
-    public ResponseEntity<GenericResponse<List<Map<String,Object>>>> updateBillPassedStatuses(@PathVariable Long billId,@RequestParam(defaultValue = "en") String locale) {
+    public ResponseEntity<GenericResponse<List<Map<String,Object>>>> getMainStatus(@PathVariable Long billId,@RequestParam(defaultValue = "en") String locale) {
         List<Map<String,Object>> serviceResponse=statusGetService.getMainStatus(billId,locale);
         GenericResponse<List<Map<String,Object>>>  respBody= new GenericResponse<>();
         respBody.setSuccess(Boolean.TRUE);
@@ -68,7 +68,18 @@ public class StatusController {
         respBody.setData(serviceResponse);
         respBody.setMessage("Passed statuses updated successfully");
         return ResponseEntity.status(HttpStatus.OK).body(respBody);
+    }
 
+
+    @GetMapping("/pending/{billId}")
+    public ResponseEntity<GenericResponse<List<Map<String,Object>>>> getPendingStatus(@PathVariable Long billId,@RequestParam(defaultValue = "en") String locale) {
+        List<Map<String,Object>> serviceResponse=statusGetService.getPendingStatus(billId,locale);
+        GenericResponse<List<Map<String,Object>>>  respBody= new GenericResponse<>();
+        respBody.setSuccess(Boolean.TRUE);
+        respBody.setStatusCode(HttpStatus.OK.value());
+        respBody.setData(serviceResponse);
+        respBody.setMessage("Passed statuses updated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(respBody);
     }
 
 
