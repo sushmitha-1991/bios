@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Data
 public class PassedStatusDTO {
     private Long id;
-    private Long houseId;
+    private String houseAbbr;
     private Long lokSabhaNumber;
     private Long lokSabhaSessionNumber;
     private Long rajyaSabhaSessionNumber;

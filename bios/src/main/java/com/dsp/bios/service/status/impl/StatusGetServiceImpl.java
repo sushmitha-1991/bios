@@ -1,5 +1,8 @@
 package com.dsp.bios.service.status.impl;
 
+import com.dsp.bios.dto.status.BillPassedStatusResponseDTO;
+import com.dsp.bios.dto.status.BillStatusDTO;
+import com.dsp.bios.dto.status.BillStatusResponseDTO;
 import com.dsp.bios.service.status.StatusGetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,19 +25,30 @@ public class StatusGetServiceImpl implements StatusGetService  {
     @Value("${pending.status}")
     private String pendingStatusSQL;
 
+    @Value("${passed.status}")
+    private String passedStatusSQL;
+
     @Override
-    public List<Map<String, Object>> getMainStatus(Long billId,String locale) {
+    public List<BillStatusResponseDTO> getMainStatus(Long billId,String locale) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("billId",billId);
         parameters.addValue("locale",locale);
-        return namedParameterJdbcTemplate.queryForList(mainStatusSQL, parameters);
+        return namedParameterJdbcTemplate.query(mainStatusSQL, parameters,new BeanPropertyRowMapper<>(BillStatusResponseDTO.class));
     }
 
     @Override
-    public List<Map<String, Object>> getPendingStatus(Long billId,String locale) {
+    public List<BillStatusResponseDTO> getPendingStatus(Long billId,String locale) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("billId",billId);
         parameters.addValue("locale",locale);
-        return namedParameterJdbcTemplate.queryForList(pendingStatusSQL, parameters);
+        return namedParameterJdbcTemplate.query(pendingStatusSQL, parameters,new BeanPropertyRowMapper<>(BillStatusResponseDTO.class));
+    }
+
+    @Override
+    public List<BillPassedStatusResponseDTO> getPassedStatus(Long billId,String locale) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("billId",billId);
+        parameters.addValue("locale",locale);
+        return namedParameterJdbcTemplate.query(passedStatusSQL, parameters,new BeanPropertyRowMapper<>(BillPassedStatusResponseDTO.class));
     }
 }

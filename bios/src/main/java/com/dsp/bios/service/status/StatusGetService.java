@@ -1,9 +1,12 @@
 package com.dsp.bios.service.status;
 
+import com.dsp.bios.dto.status.BillPassedStatusResponseDTO;
+import com.dsp.bios.dto.status.BillStatusResponseDTO;
+
 import java.util.List;
-import java.util.Map;
 
 public interface StatusGetService {
-    List<Map<String, Object>> getMainStatus(Long billId,String locale);
-    List<Map<String, Object>> getPendingStatus(Long billId,String locale);
+    List<BillStatusResponseDTO> getMainStatus(Long billId, String locale);
+    List<BillStatusResponseDTO> getPendingStatus(Long billId,String locale);
+    List<BillPassedStatusResponseDTO> getPassedStatus(Long billId, String locale);
 }

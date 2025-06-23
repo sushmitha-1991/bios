@@ -60,9 +60,9 @@ public class StatusController {
 
 
     @GetMapping("/main/{billId}")
-    public ResponseEntity<GenericResponse<List<Map<String,Object>>>> getMainStatus(@PathVariable Long billId,@RequestParam(defaultValue = "en") String locale) {
-        List<Map<String,Object>> serviceResponse=statusGetService.getMainStatus(billId,locale);
-        GenericResponse<List<Map<String,Object>>>  respBody= new GenericResponse<>();
+    public ResponseEntity<GenericResponse<List<BillStatusResponseDTO>>> getMainStatus(@PathVariable Long billId,@RequestParam(defaultValue = "en") String locale) {
+        List<BillStatusResponseDTO> serviceResponse=statusGetService.getMainStatus(billId,locale);
+        GenericResponse<List<BillStatusResponseDTO>>  respBody= new GenericResponse<>();
         respBody.setSuccess(Boolean.TRUE);
         respBody.setStatusCode(HttpStatus.OK.value());
         respBody.setData(serviceResponse);
@@ -72,9 +72,20 @@ public class StatusController {
 
 
     @GetMapping("/pending/{billId}")
-    public ResponseEntity<GenericResponse<List<Map<String,Object>>>> getPendingStatus(@PathVariable Long billId,@RequestParam(defaultValue = "en") String locale) {
-        List<Map<String,Object>> serviceResponse=statusGetService.getPendingStatus(billId,locale);
-        GenericResponse<List<Map<String,Object>>>  respBody= new GenericResponse<>();
+    public ResponseEntity<GenericResponse<List<BillStatusResponseDTO>>> getPendingStatus(@PathVariable Long billId,@RequestParam(defaultValue = "en") String locale) {
+        List<BillStatusResponseDTO> serviceResponse=statusGetService.getPendingStatus(billId,locale);
+        GenericResponse<List<BillStatusResponseDTO>>  respBody= new GenericResponse<>();
+        respBody.setSuccess(Boolean.TRUE);
+        respBody.setStatusCode(HttpStatus.OK.value());
+        respBody.setData(serviceResponse);
+        respBody.setMessage("Passed statuses updated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(respBody);
+    }
+
+    @GetMapping("/passed/{billId}")
+    public ResponseEntity<GenericResponse<List<BillPassedStatusResponseDTO>>> getPassedStatus(@PathVariable Long billId,@RequestParam(defaultValue = "en") String locale) {
+        List<BillPassedStatusResponseDTO> serviceResponse=statusGetService.getPassedStatus(billId,locale);
+        GenericResponse<List<BillPassedStatusResponseDTO>>  respBody= new GenericResponse<>();
         respBody.setSuccess(Boolean.TRUE);
         respBody.setStatusCode(HttpStatus.OK.value());
         respBody.setData(serviceResponse);

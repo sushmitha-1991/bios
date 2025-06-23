@@ -6,10 +6,7 @@ import com.dsp.bios.dto.status.PendingStatusDTO;
 import com.dsp.bios.entity.BillStatus;
 import com.dsp.bios.entity.PassedStatus;
 import com.dsp.bios.entity.PendingStatus;
-import com.dsp.bios.repository.BillStatusRepository;
-import com.dsp.bios.repository.CodeRepo;
-import com.dsp.bios.repository.PassedStatusRepository;
-import com.dsp.bios.repository.PendingStatusRepository;
+import com.dsp.bios.repository.*;
 import com.dsp.bios.service.status.StatusService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,7 @@ public class StatusServiceImpl implements StatusService {
     private PendingStatusRepository pendingStatusRepository;
     private PassedStatusRepository passedStatusRepository;
     private CodeRepo codeRepo;
+    private HouseRepository houseRepository;
 
 
     @Transactional
@@ -101,18 +99,28 @@ public class StatusServiceImpl implements StatusService {
         List<Long> ids = passedStatusDTOs.stream()
                 .map(PassedStatusDTO::getId)
                 .filter(Objects::nonNull)
-                .toList();
+                .collect(Collectors.toList());
         for (PassedStatusDTO dto : passedStatusDTOs) {
-            PassedStatus passedStatus = passedStatusRepository.findById(dto.getId())
-                    .orElse(new PassedStatus());
+
+            PassedStatus passedStatus;
+            if( dto.getId()!=null ) {
+                passedStatus = passedStatusRepository.findById(dto.getId())
+                        .orElse(new PassedStatus());
+            } else {
+                passedStatus=new PassedStatus();
+            }
 
             passedStatus.setBillId(billId);
-            passedStatus.setHouseId(dto.getHouseId());
+            Long houseId=houseRepository.findByAbbr(dto.getHouseAbbr());
+            passedStatus.setHouseId(houseId);
             passedStatus.setLokSabhaNumber(dto.getLokSabhaNumber());
             passedStatus.setLokSabhaSessionNumber(dto.getLokSabhaSessionNumber());
             passedStatus.setRajyaSabhaSessionNumber(dto.getRajyaSabhaSessionNumber());
             passedStatus.setPassedDate(dto.getPassedDate());
             passedStatusRepository.save(passedStatus);
+            if(!ids.contains(passedStatus.getId())){
+                ids.add(passedStatus.getId());
+            }
         }
         passedStatusRepository.deactivatePassedStatuses(billId, ids);
         Long passedCodeId=codeRepo.getIdByAbbr("BILL_STATUS_PASSED");

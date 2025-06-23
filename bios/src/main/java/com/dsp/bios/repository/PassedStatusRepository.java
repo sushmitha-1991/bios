@@ -17,6 +17,6 @@ public interface PassedStatusRepository extends JpaRepository<PassedStatus, Long
     Optional<PassedStatus> findByBillIdAndLokSabhaNumber(Long billId, Long lokSabhaNumber);
 
     @Modifying
-    @Query("UPDATE PassedStatus ps SET ps.isActive = false WHERE ps.bill.id = :billId AND (:lokSabhaNumbers IS NULL OR ps.id NOT IN :ids)")
+    @Query("UPDATE PassedStatus ps SET ps.isActive = false WHERE ps.billId = :billId AND ( ps.id NOT IN :ids)")
     void deactivatePassedStatuses(Long billId, List<Long> ids);
 }
