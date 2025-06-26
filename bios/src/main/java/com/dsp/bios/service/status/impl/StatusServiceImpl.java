@@ -43,6 +43,7 @@ public class StatusServiceImpl implements StatusService {
             billStatus.setBillId(billId);
             billStatus.setBillStatusId(dto.getBillStatusId());
             billStatus.setStatusDate(dto.getDate());
+            billStatus.setIsActive(Boolean.TRUE);
             billStatusRepository.save(billStatus);
         }
         billStatusRepository.deactivateBillStatusesNotInList(billId, requestBillStatusIds);
