@@ -135,6 +135,7 @@ public class StatusServiceImpl implements StatusService {
         billStatus.setBillStatusId(passedCodeId);
         if(maxPassedDateOpt.isPresent()){
             billStatus.setStatusDate(maxPassedDateOpt.get());
+            billStatus.setIsActive(Boolean.TRUE);
         } else {
             billStatus.setIsActive(Boolean.FALSE);
         }
