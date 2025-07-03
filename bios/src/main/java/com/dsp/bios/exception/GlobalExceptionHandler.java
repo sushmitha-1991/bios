@@ -10,7 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
+@Slf4j
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EntityNotFoundException.class)
@@ -81,6 +87,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<GenericResponse<Void>> handleBadRequest(BadRequest ex) {
 		GenericResponse<Void> response = new GenericResponse<>(HttpStatus.BAD_REQUEST.value(),  false, ex.getMessage(),
 				null);
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(response);
 	}
 }
