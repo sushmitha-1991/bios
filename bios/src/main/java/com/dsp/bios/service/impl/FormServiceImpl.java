@@ -3,6 +3,7 @@ package com.dsp.bios.service.impl;
 import com.dsp.bios.dto.newbillentry.EntryDataDTO;
 import com.dsp.bios.entity.Bill;
 import com.dsp.bios.entity.EntryData;
+import com.dsp.bios.exception.BadRequest;
 import com.dsp.bios.mapper.NewEntryToBill;
 import com.dsp.bios.repository.LSBillsViewDetailRepository;
 import com.dsp.bios.repository.LSEntryDataEntityRepository;
@@ -25,6 +26,10 @@ public class FormServiceImpl implements FormService {
 
    @Transactional
     public Long save(EntryDataDTO dto) {
+       boolean exits=billsRepo.checkIfBillNumberAlreadyExits(dto.getBillNumber());
+       if(exits){
+           throw new BadRequest("bill number already exits");
+       }
         Bill billView =  mapper.entryDataDTOtoBill(dto);
         billView.setHouseId(userUtils.getHouseId());
         billView.setIsDraft(false);
@@ -57,6 +62,10 @@ public class FormServiceImpl implements FormService {
 
     @Transactional
     public void update(Long id, EntryDataDTO dto) {
+        boolean exits=billsRepo.checkIfBillNumberAlreadyExitsNotForId(dto.getBillNumber(),id);
+        if(exits){
+            throw new BadRequest("bill number already exits");
+        }
         Bill dbEntryView = billsRepo.getReferenceById(id);
         Bill billView =  mapper.entryDataDTOtoBill(dto);
         billView.setIsDraft(false);
