@@ -17,6 +17,7 @@ public class Bill extends Auditable {
     private Long id;
     private String houseAbbr;
     private String billNo;
+    private Long billYear;
     private String shortTitle;
     private String introducedBy;
     private String billCategory;

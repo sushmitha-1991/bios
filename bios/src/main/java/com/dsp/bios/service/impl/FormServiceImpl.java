@@ -26,9 +26,9 @@ public class FormServiceImpl implements FormService {
 
    @Transactional
     public Long save(EntryDataDTO dto) {
-       boolean exits=billsRepo.checkIfBillNumberAlreadyExits(dto.getBillNumber());
+       boolean exits=billsRepo.checkIfBillNumberAlreadyExits(dto.getBillNumber(),dto.getBillYear());
        if(exits){
-           throw new BadRequest("bill number already exits");
+           throw new BadRequest("bill number in same year already exits");
        }
         Bill billView =  mapper.entryDataDTOtoBill(dto);
         billView.setHouseId(userUtils.getHouseId());
@@ -62,9 +62,9 @@ public class FormServiceImpl implements FormService {
 
     @Transactional
     public void update(Long id, EntryDataDTO dto) {
-        boolean exits=billsRepo.checkIfBillNumberAlreadyExitsNotForId(dto.getBillNumber(),id);
+        boolean exits=billsRepo.checkIfBillNumberAlreadyExitsNotForId(dto.getBillNumber(),dto.getBillYear(),id);
         if(exits){
-            throw new BadRequest("bill number already exits");
+            throw new BadRequest("bill number in same year already exits");
         }
         Bill dbEntryView = billsRepo.getReferenceById(id);
         Bill billView =  mapper.entryDataDTOtoBill(dto);

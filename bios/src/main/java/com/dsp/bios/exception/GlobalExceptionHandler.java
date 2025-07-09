@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<GenericResponse<Void>> handleBadRequest(BadRequest ex) {
 		GenericResponse<Void> response = new GenericResponse<>(HttpStatus.BAD_REQUEST.value(),  false, ex.getMessage(),
 				null);
-		return ResponseEntity.status(HttpStatus.CONFLICT)
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(response);
 	}

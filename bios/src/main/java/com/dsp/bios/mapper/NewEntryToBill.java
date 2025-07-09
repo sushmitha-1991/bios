@@ -12,6 +12,7 @@ public interface NewEntryToBill {
     @Mapping(source = "billIntroducedInHouseAbbr", target = "houseAbbr")
 
     @Mapping(source = "billNumber", target = "billNo")
+    @Mapping(source = "billYear", target = "billYear")
     @Mapping(source = "shortTitle", target = "shortTitle")
 
     @Mapping(source = "billCategory", target = "billCategory")
@@ -34,5 +35,6 @@ public interface NewEntryToBill {
 
     @Mapping(source = "rajSabhaSession", target = "rajSabhaSessionNumber")
     @Mapping(source = "rajSabhaSessionId", target = "rajSabhaSessionNumberId")
+
     Bill entryDataDTOtoBill(EntryDataDTO dto);
 }
