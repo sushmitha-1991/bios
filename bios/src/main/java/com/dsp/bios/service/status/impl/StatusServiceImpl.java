@@ -6,6 +6,7 @@ import com.dsp.bios.dto.status.PendingStatusDTO;
 import com.dsp.bios.entity.BillStatus;
 import com.dsp.bios.entity.PassedStatus;
 import com.dsp.bios.entity.PendingStatus;
+import com.dsp.bios.exception.BadRequest;
 import com.dsp.bios.repository.*;
 import com.dsp.bios.service.status.StatusService;
 import lombok.AllArgsConstructor;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +34,11 @@ public class StatusServiceImpl implements StatusService {
                 .map(BillStatusDTO::getBillStatusId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+        Set<Long> statusIds=billStatusDTOs.stream().map(BillStatusDTO::getBillStatusId).collect(Collectors.toSet());
+        if(statusIds.size()!=billStatusDTOs.size()){
+            throw new BadRequest("Status are not unique");
+        }
+
 
         for (BillStatusDTO dto : billStatusDTOs) {
             BillStatus billStatus = billStatusRepository.findByBillIdAndBillStatusId(billId, dto.getBillStatusId())
@@ -56,6 +59,10 @@ public class StatusServiceImpl implements StatusService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
+        Set<Long> statusIds=pendingStatusDTOs.stream().map(PendingStatusDTO::getPendingStatusId).collect(Collectors.toSet());
+        if(statusIds.size()!=pendingStatusDTOs.size()){
+            throw new BadRequest("Status are not unique");
+        }
         for (PendingStatusDTO dto : pendingStatusDTOs) {
 
             PendingStatus pendingStatus ;
@@ -101,6 +108,10 @@ public class StatusServiceImpl implements StatusService {
                 .map(PassedStatusDTO::getId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+        Set<String> statusIds=passedStatusDTOs.stream().map(PassedStatusDTO::getHouseAbbr).collect(Collectors.toSet());
+        if(statusIds.size()!=passedStatusDTOs.size()){
+            throw new BadRequest("Status are not unique");
+        }
         for (PassedStatusDTO dto : passedStatusDTOs) {
 
             PassedStatus passedStatus;
