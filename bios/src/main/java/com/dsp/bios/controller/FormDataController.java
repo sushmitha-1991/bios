@@ -22,9 +22,9 @@ public class FormDataController {
 
 
     @PostMapping
-    public ResponseEntity<GenericResponse<SaveResponseDTO>> createBillEntry(@RequestBody @Valid EntryDataDTO formDataDetails) {
+    public ResponseEntity<GenericResponse<SaveResponseDTO>> createBillEntry(@RequestBody @Valid EntryDataDTO formDataDetails,@RequestParam(required = false) Long draftId) {
 
-            Long id = formService.save(formDataDetails);
+            Long id = formService.save(formDataDetails,draftId);
             SaveResponseDTO resp = SaveResponseDTO.builder().id(id).build();
             GenericResponse<SaveResponseDTO>  respBody= new GenericResponse<>();
             respBody.setSuccess(Boolean.TRUE);
@@ -49,8 +49,8 @@ public class FormDataController {
 
 
     @PostMapping("/{id}")
-    public ResponseEntity<GenericResponse<Void>> createBillEntry(@PathVariable(name="id") Long id, @RequestBody @Valid EntryDataDTO formDataDetails) {
-        formService.update(id,formDataDetails);
+    public ResponseEntity<GenericResponse<Void>> createBillEntry(@PathVariable(name="id") Long id, @RequestBody @Valid EntryDataDTO formDataDetails,@RequestParam(required = false) Long draftId) {
+        formService.update(id,formDataDetails,draftId);
         GenericResponse<Void>  respBody= new GenericResponse<>();
         respBody.setSuccess(Boolean.TRUE);
         respBody.setStatusCode(HttpStatus.OK.value());

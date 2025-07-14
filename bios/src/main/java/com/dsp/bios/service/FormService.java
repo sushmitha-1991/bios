@@ -6,8 +6,8 @@ import com.dsp.bios.dto.newbillentry.EntryDataDTO;
 public interface FormService {
 
 
-    Long save(EntryDataDTO dto);
+    Long save(EntryDataDTO dto, Long draftId);
 
     EntryDataDTO getData(Long id);
-    void update(Long id, EntryDataDTO dto) ;
+    void update(Long id, EntryDataDTO dto, Long draftId) ;
 }

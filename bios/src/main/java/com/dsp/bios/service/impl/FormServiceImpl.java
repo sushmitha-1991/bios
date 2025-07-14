@@ -10,6 +10,7 @@ import com.dsp.bios.repository.LSEntryDataEntityRepository;
 import com.dsp.bios.service.FormService;
 import com.dsp.bios.util.UserUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,11 @@ public class FormServiceImpl implements FormService {
     private final LSEntryDataEntityRepository entryRepo;
     private final NewEntryToBill mapper;
     private final UserUtils userUtils;
+    private final JdbcTemplate jdbcTemplate;
 
 
-
-   @Transactional
-    public Long save(EntryDataDTO dto) {
+    @Transactional
+    public Long save(EntryDataDTO dto, Long draftId) {
        boolean exits=billsRepo.checkIfBillNumberAlreadyExits(dto.getBillNumber(),dto.getBillYear());
        if(exits){
            throw new BadRequest("bill number in same year already exits");
@@ -42,6 +43,7 @@ public class FormServiceImpl implements FormService {
        }
         entryData.setEntryData(dto);
        entryData=entryRepo.save(entryData);
+       removeDraft(draftId);
         return  entryData.getBillId();
     }
 
@@ -61,7 +63,7 @@ public class FormServiceImpl implements FormService {
     }
 
     @Transactional
-    public void update(Long id, EntryDataDTO dto) {
+    public void update(Long id, EntryDataDTO dto, Long draftId) {
         boolean exits=billsRepo.checkIfBillNumberAlreadyExitsNotForId(dto.getBillNumber(),dto.getBillYear(),id);
         if(exits){
             throw new BadRequest("bill number in same year already exits");
@@ -81,6 +83,7 @@ public class FormServiceImpl implements FormService {
         }
         dbEntryData.setEntryData(dto);
         entryRepo.save(dbEntryData);
+        removeDraft(draftId);
     }
 
     private void copyBillView(Bill dbEntry, Bill billView) {
@@ -105,5 +108,11 @@ public class FormServiceImpl implements FormService {
        dbEntry.setRajSabhaSessionNumberId(billView.getRajSabhaSessionNumberId());
        dbEntry.setIsDraft(billView.getIsDraft());
        dbEntry.setHouseId(billView.getHouseId());
+    }
+    private void removeDraft(Long draftId) {
+        if (draftId != null) {
+            jdbcTemplate.update("UPDATE master.drafted_document SET is_deleted = true, is_active = false WHERE id = ?",
+                    draftId);
+        }
     }
 }
