@@ -17,5 +17,7 @@ public class JointCommitteeDTO extends CommitteeTypeDTO {
     @NotNull(message = "Motion for concurrence date is mandatory")
     LocalDate jcMotionForConcurrenceDate;
 
+    LocalDate jcDateOfPresentation;
+
 
 }

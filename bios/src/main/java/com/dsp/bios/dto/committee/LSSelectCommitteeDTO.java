@@ -11,4 +11,5 @@ public class LSSelectCommitteeDTO extends CommitteeTypeDTO {
 
     @NotNull(message = "Motion for reference date is mandatory")
     LocalDate lsscMotionForReferenceDate;
+    LocalDate lsscDateOfPresentation;
 }

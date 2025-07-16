@@ -12,4 +12,6 @@ public class RSSelectCommitteeDTO extends CommitteeTypeDTO {
 
     @NotNull(message = "Motion for reference date is mandatory")
     LocalDate rsscMotionForReferenceDate;
+
+    LocalDate rsscDateOfPresentation;
 }
