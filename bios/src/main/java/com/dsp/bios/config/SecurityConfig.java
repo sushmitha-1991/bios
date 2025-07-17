@@ -71,7 +71,8 @@ public class SecurityConfig {
 		log.debug("Configuring SecurityFilterChain");
 
 		http.authorizeHttpRequests((authz) -> authz.requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
-						"/swagger-ui.html"
+						"/swagger-ui.html",
+						"/api_ls/business/**"
 				).permitAll().anyRequest().authenticated())
 				.csrf(AbstractHttpConfigurer::disable).authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
