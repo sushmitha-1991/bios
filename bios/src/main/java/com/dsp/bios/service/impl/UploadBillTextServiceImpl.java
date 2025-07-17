@@ -5,6 +5,7 @@ import com.dsp.bios.dto.uploadBillText.UploadBillTextDTO;
 import com.dsp.bios.exception.ResourceNotFoundException;
 import com.dsp.bios.repository.CodeRepo;
 import com.dsp.bios.repository.LSUploadBillTextEntityRepository;
+import com.dsp.bios.service.HistoryService;
 import com.dsp.bios.service.UploadBillTextService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 public class UploadBillTextServiceImpl implements UploadBillTextService {
     private final LSUploadBillTextEntityRepository urepo;
     private final CodeRepo codeRepo;
+    private final HistoryService historyService;
 
     @Transactional
     public void save(Long id, List<UploadBillTextDTO> dto) {
@@ -35,6 +37,7 @@ public class UploadBillTextServiceImpl implements UploadBillTextService {
             t.setUploadBillTextDTO(dto);
             urepo.save(t);
         }
+        historyService.create(id,"Bill text","Update");
     }
 
     @Transactional(readOnly = true)

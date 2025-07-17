@@ -8,6 +8,7 @@ import com.dsp.bios.mapper.NewEntryToBill;
 import com.dsp.bios.repository.LSBillsViewDetailRepository;
 import com.dsp.bios.repository.LSEntryDataEntityRepository;
 import com.dsp.bios.service.FormService;
+import com.dsp.bios.service.HistoryService;
 import com.dsp.bios.util.UserUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,6 +24,7 @@ public class FormServiceImpl implements FormService {
     private final NewEntryToBill mapper;
     private final UserUtils userUtils;
     private final JdbcTemplate jdbcTemplate;
+    private final HistoryService historyService;
 
 
     @Transactional
@@ -44,6 +46,7 @@ public class FormServiceImpl implements FormService {
         entryData.setEntryData(dto);
        entryData=entryRepo.save(entryData);
        removeDraft(draftId);
+        historyService.create(entryData.getBillId(),"Bill","Created");
         return  entryData.getBillId();
     }
 
@@ -84,6 +87,7 @@ public class FormServiceImpl implements FormService {
         dbEntryData.setEntryData(dto);
         entryRepo.save(dbEntryData);
         removeDraft(draftId);
+        historyService.create(id,"Bill","Updated");
     }
 
     private void copyBillView(Bill dbEntry, Bill billView) {

@@ -4,6 +4,7 @@ import com.dsp.bios.dto.committee.CommitteeTypeDTO;
 import com.dsp.bios.entity.ReferToCommittee;
 import com.dsp.bios.repository.LSReferToCommitteeEntityRepository;
 import com.dsp.bios.service.CommitteeService;
+import com.dsp.bios.service.HistoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ public class CommitteeServiceImpl implements CommitteeService {
 
 
     private final LSReferToCommitteeEntityRepository crepo;
+    private final HistoryService historyService;
     @Transactional
     public void save(Long id, CommitteeTypeDTO dto) {
 
@@ -25,6 +27,7 @@ public class CommitteeServiceImpl implements CommitteeService {
             t.setCommitteeData(dto);
             crepo.save(t);
         }
+        historyService.create(id,"Committee","Updated");
     }
 
     @Transactional(readOnly = true)

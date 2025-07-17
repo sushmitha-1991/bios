@@ -8,6 +8,7 @@ import com.dsp.bios.entity.PassedStatus;
 import com.dsp.bios.entity.PendingStatus;
 import com.dsp.bios.exception.BadRequest;
 import com.dsp.bios.repository.*;
+import com.dsp.bios.service.HistoryService;
 import com.dsp.bios.service.status.StatusService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class StatusServiceImpl implements StatusService {
     private PassedStatusRepository passedStatusRepository;
     private CodeRepo codeRepo;
     private HouseRepository houseRepository;
+    private HistoryService historyService;
 
 
     @Transactional
@@ -51,6 +53,7 @@ public class StatusServiceImpl implements StatusService {
             billStatusRepository.save(billStatus);
         }
         billStatusRepository.deactivateBillStatusesNotInList(billId, requestBillStatusIds);
+        historyService.create(billId,"Bill Status","Update");
     }
 
     @Transactional
@@ -106,6 +109,7 @@ public class StatusServiceImpl implements StatusService {
         recalculateDisplaySequences(billStatus,billStatuses);
         billStatusRepository.save(billStatus);
         billStatusRepository.saveAll(billStatuses);
+        historyService.create(billId,"Pending Status","Update");
     }
 
     @Transactional
@@ -164,6 +168,7 @@ public class StatusServiceImpl implements StatusService {
         recalculateDisplaySequences(billStatus,billStatuses);
         billStatusRepository.save(billStatus);
         billStatusRepository.saveAll(billStatuses);
+        historyService.create(billId,"Passed Status","Update");
     }
 
     private void recalculateDisplaySequences(BillStatus newStatus,List<BillStatus> billStatuses) {
