@@ -12,4 +12,5 @@ public class PassedStatusDTO {
     private Long lokSabhaSessionNumber;
     private Long rajyaSabhaSessionNumber;
     private LocalDate passedDate;
+    private Long displaySequence;
 }

@@ -8,5 +8,6 @@ import java.time.LocalDate;
 public class PendingStatusDTO {
     private Long id;
     private Long pendingStatusId;
-    private LocalDate pendingStatusDate; // Change to Long if pending_status_date is numeric
+    private LocalDate pendingStatusDate;
+    private Long displaySequence;
 }

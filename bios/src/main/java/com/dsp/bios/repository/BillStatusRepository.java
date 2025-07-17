@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface BillStatusRepository extends JpaRepository<BillStatus, Long> {
 
+    @Query("select bs from BillStatus bs where bs.isActive = true and bs.billId = :billId")
     List<BillStatus> findByBillId(Long billId);
 
     Optional<BillStatus> findByBillIdAndBillStatusId(Long billId, Long billStatusId);
@@ -20,4 +21,6 @@ public interface BillStatusRepository extends JpaRepository<BillStatus, Long> {
     @Modifying
     @Query("UPDATE BillStatus bs SET bs.isActive = false WHERE bs.bill.id = :billId AND bs.billStatusId NOT IN :billStatusIds")
     void deactivateBillStatusesNotInList(Long billId, List<Long> billStatusIds);
+
+
 }

@@ -28,4 +28,8 @@ public class BillStatus extends Auditable {
 
     @Column(name = "status_date")
     private LocalDate statusDate;
+
+    @Column(name = "display_sequence")
+    private Long displaySequence;
+
 }

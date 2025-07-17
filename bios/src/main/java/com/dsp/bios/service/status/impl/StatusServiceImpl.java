@@ -46,6 +46,7 @@ public class StatusServiceImpl implements StatusService {
             billStatus.setBillId(billId);
             billStatus.setBillStatusId(dto.getBillStatusId());
             billStatus.setStatusDate(dto.getDate());
+            billStatus.setDisplaySequence(dto.getDisplaySequence());
             billStatus.setIsActive(Boolean.TRUE);
             billStatusRepository.save(billStatus);
         }
@@ -77,6 +78,7 @@ public class StatusServiceImpl implements StatusService {
             pendingStatus.setPendingStatusId(dto.getPendingStatusId());
             pendingStatus.setPendingStatusDate(dto.getPendingStatusDate());
             pendingStatus.setIsActive(Boolean.TRUE);
+            pendingStatus.setDisplaySequence(dto.getDisplaySequence());
             pendingStatusRepository.save(pendingStatus);
             if(!requestPendingStatusIds.contains(pendingStatus.getId())){
                 requestPendingStatusIds.add(pendingStatus.getId());
@@ -88,7 +90,10 @@ public class StatusServiceImpl implements StatusService {
                 .map(PendingStatusDTO::getPendingStatusDate)
                 .filter(Objects::nonNull)
                 .max(Comparator.naturalOrder());
-        BillStatus billStatus = billStatusRepository.findByBillIdAndBillStatusId(billId,passedCodeId)
+        List<BillStatus> billStatuses=billStatusRepository.findByBillId(billId);
+        BillStatus billStatus = billStatuses.stream()
+                .filter(status -> status.getBillStatusId().equals(passedCodeId))
+                .findFirst()
                 .orElse(new BillStatus());
         billStatus.setBillId(billId);
         billStatus.setBillStatusId(passedCodeId);
@@ -98,7 +103,9 @@ public class StatusServiceImpl implements StatusService {
         } else {
             billStatus.setIsActive(Boolean.FALSE);
         }
+        recalculateDisplaySequences(billStatus,billStatuses);
         billStatusRepository.save(billStatus);
+        billStatusRepository.saveAll(billStatuses);
     }
 
     @Transactional
@@ -129,6 +136,7 @@ public class StatusServiceImpl implements StatusService {
             passedStatus.setLokSabhaSessionNumber(dto.getLokSabhaSessionNumber());
             passedStatus.setRajyaSabhaSessionNumber(dto.getRajyaSabhaSessionNumber());
             passedStatus.setPassedDate(dto.getPassedDate());
+            passedStatus.setDisplaySequence(dto.getDisplaySequence());
             passedStatusRepository.save(passedStatus);
             if(!ids.contains(passedStatus.getId())){
                 ids.add(passedStatus.getId());
@@ -140,7 +148,10 @@ public class StatusServiceImpl implements StatusService {
                 .map(PassedStatusDTO::getPassedDate)
                 .filter(Objects::nonNull)
                 .max(Comparator.naturalOrder());
-        BillStatus billStatus = billStatusRepository.findByBillIdAndBillStatusId(billId,passedCodeId)
+        List<BillStatus> billStatuses=billStatusRepository.findByBillId(billId);
+        BillStatus billStatus = billStatuses.stream()
+                .filter(status -> status.getBillStatusId().equals(passedCodeId))
+                .findFirst()
                 .orElse(new BillStatus());
         billStatus.setBillId(billId);
         billStatus.setBillStatusId(passedCodeId);
@@ -150,7 +161,25 @@ public class StatusServiceImpl implements StatusService {
         } else {
             billStatus.setIsActive(Boolean.FALSE);
         }
+        recalculateDisplaySequences(billStatus,billStatuses);
         billStatusRepository.save(billStatus);
+        billStatusRepository.saveAll(billStatuses);
     }
+
+    private void recalculateDisplaySequences(BillStatus newStatus,List<BillStatus> billStatuses) {
+        Long possibleSequence=null;
+        for (BillStatus status : billStatuses) {
+            if (status.getStatusDate().isBefore(newStatus.getStatusDate()) || status.getStatusDate().equals(newStatus.getStatusDate()) ) {
+                if(possibleSequence!=null) {
+                    newStatus.setDisplaySequence(status.getDisplaySequence());
+                }
+                status.setDisplaySequence(status.getDisplaySequence() + 1L);
+            }
+        }
+        if(possibleSequence==null)  {
+            newStatus.setDisplaySequence(1L);
+        }
+    }
+
 
 }

@@ -38,4 +38,7 @@ public class PassedStatus extends Auditable {
 
     @Column(name = "passed_date")
     private LocalDate passedDate;
+
+    @Column(name = "display_sequence")
+    private Long displaySequence;
 }

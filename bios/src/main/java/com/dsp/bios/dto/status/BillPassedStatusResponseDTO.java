@@ -20,4 +20,5 @@ public class BillPassedStatusResponseDTO {
     private String lokSabhaNumber;
     private String lokSabhaSessionNumber;
     private String rajyaSabhaSessionNumber;
+    private Long displaySequence;
 }

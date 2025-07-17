@@ -29,4 +29,7 @@ public class PendingStatus extends Auditable {
     @ManyToOne
     @JoinColumn(name = "bill_id",insertable = false,updatable = false)
     private Bill bill;
+
+    @Column(name = "display_sequence")
+    private Long displaySequence;
 }
