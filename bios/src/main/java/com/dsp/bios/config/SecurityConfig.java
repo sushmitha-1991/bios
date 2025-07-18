@@ -72,7 +72,9 @@ public class SecurityConfig {
 
 		http.authorizeHttpRequests((authz) -> authz.requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
 						"/swagger-ui.html",
-						"/api_ls/business/**"
+						"/api_ls/business/**",
+						"/api_rs/business/**"
+
 				).permitAll().anyRequest().authenticated())
 				.csrf(AbstractHttpConfigurer::disable).authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
