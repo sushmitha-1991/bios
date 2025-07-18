@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface BillStatusRepository extends JpaRepository<BillStatus, Long> {
 
-    @Query("select bs from BillStatus bs where bs.isActive = true and bs.billId = :billId")
+    @Query("select bs from BillStatus bs where bs.billId = :billId")
     List<BillStatus> findByBillId(Long billId);
 
     Optional<BillStatus> findByBillIdAndBillStatusId(Long billId, Long billStatusId);
