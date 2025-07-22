@@ -45,11 +45,12 @@ public class BillService {
                 b.status,
                 b.ministry,
                 b.bill_year,
-                b.house_abbr,
+                h.house_name AS houseName,
                 b.date_of_introduction,
                 ubt.upload_bill_text
             FROM bills.bill b
             LEFT JOIN bills.upload_bill_text ubt ON b.id = ubt.bill_id
+            LEFT JOIN master.houses h ON b.house_abbr = h.abbr
             WHERE 1 = 1
         """);
 
@@ -80,7 +81,7 @@ public class BillService {
             params.put("billYear", billYear);
         }
         if (billIntroducedInHouse != null && !billIntroducedInHouse.isBlank()) {
-            sql.append(" AND b.house_abbr ILIKE :billIntroducedInHouse ");
+            sql.append(" AND h.house_name ILIKE :billIntroducedInHouse ");
             params.put("billIntroducedInHouse", "%" + billIntroducedInHouse + "%");
         }
         if (billIntroducedBy != null && !billIntroducedBy.isBlank()) {
@@ -103,11 +104,43 @@ public class BillService {
 
         List<BillRecord> records = jdbcTemplate.query(sql.toString(), params, this::mapToRecord);
 
-        // ✅ Fix: Proper count query without ORDER BY / OFFSET / FETCH
-        StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM bills.bill b WHERE 1 = 1 ");
-        String conditionPart = sql.toString().split("ORDER BY")[0]; // remove ORDER BY and pagination
-        if (conditionPart.contains("AND")) {
-            countSql.append(conditionPart.substring(conditionPart.indexOf("AND")));
+        // Count query (same filters, but without ORDER or pagination)
+        StringBuilder countSql = new StringBuilder("""
+            SELECT COUNT(*)
+            FROM bills.bill b
+            LEFT JOIN master.houses h ON b.house_abbr = h.abbr
+            WHERE 1 = 1
+        """);
+
+        if (billNumber != null && !billNumber.isBlank()) {
+            countSql.append(" AND b.bill_no ILIKE :billNumber ");
+        }
+        if (billName != null && !billName.isBlank()) {
+            countSql.append(" AND b.bill_category ILIKE :billName ");
+        }
+        if (billType != null && !billType.isBlank()) {
+            countSql.append(" AND b.introduced_by ILIKE :billType ");
+        }
+        if (billCategory != null && !billCategory.isBlank()) {
+            countSql.append(" AND b.bill_category ILIKE :billCategory ");
+        }
+        if (ministryName != null && !ministryName.isBlank()) {
+            countSql.append(" AND b.ministry ILIKE :ministryName ");
+        }
+        if (billYear != null) {
+            countSql.append(" AND b.bill_year = :billYear ");
+        }
+        if (billIntroducedInHouse != null && !billIntroducedInHouse.isBlank()) {
+            countSql.append(" AND h.house_name ILIKE :billIntroducedInHouse ");
+        }
+        if (billIntroducedBy != null && !billIntroducedBy.isBlank()) {
+            countSql.append(" AND b.introduced_by ILIKE :billIntroducedBy ");
+        }
+        if (billIntroducedDate != null) {
+            countSql.append(" AND b.date_of_introduction = :billIntroducedDate ");
+        }
+        if (status != null && !status.isBlank()) {
+            countSql.append(" AND b.status ILIKE :status ");
         }
 
         long total = jdbcTemplate.queryForObject(countSql.toString(), params, Long.class);
@@ -128,7 +161,7 @@ public class BillService {
                 .billCategory(rs.getString("bill_category"))
                 .ministryName(rs.getString("ministry"))
                 .billYear(rs.getObject("bill_year") != null ? rs.getLong("bill_year") : null)
-                .billIntroducedInHouse(rs.getString("house_abbr"))
+                .billIntroducedInHouse(rs.getString("houseName")) // updated to house_name
                 .billIntroducedBy(rs.getString("introduced_by"))
                 .billIntroducedDate(rs.getString("date_of_introduction"))
                 .billIntroducedFile(fileUrl)
@@ -146,7 +179,7 @@ public class BillService {
                 return "https://sansad.in/getFile/BillsTexts/LSBillTexts/Asintroduced/" + fileName + "?source=legislation";
             }
         } catch (Exception e) {
-            // log if needed
+            // Optional: log error
         }
         return null;
     }
