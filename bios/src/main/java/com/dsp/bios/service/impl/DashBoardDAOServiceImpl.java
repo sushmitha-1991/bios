@@ -118,7 +118,7 @@ public class DashBoardDAOServiceImpl implements DashBoardDAOService {
         }
 
         String query=sbSelect.append(" ").append(sbWhere).append(" ").append(orderBy).toString();
-        log.error("{}",query);
+        log.debug("filter query {} ",query);
         return namedParameterJdbcTemplate.query(query, parameters,new BeanPropertyRowMapper<>(BillDAO.class));
 
     }
