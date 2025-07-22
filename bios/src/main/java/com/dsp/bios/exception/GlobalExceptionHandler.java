@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.dsp.bios.response.GenericResponse;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 @ControllerAdvice
 @Slf4j
@@ -90,5 +91,16 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(response);
+	}
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(HandlerMethodValidationException.class)
+	@ResponseBody
+	public ResponseEntity<GenericResponse<Void>> handleBadRequest(HandlerMethodValidationException ex) {
+
+
+		GenericResponse<Void> response = new GenericResponse<>(HttpStatus.BAD_REQUEST.value(), false,
+				"Validation failed", null);
+
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 }

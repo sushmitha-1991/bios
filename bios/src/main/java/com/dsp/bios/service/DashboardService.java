@@ -11,4 +11,6 @@ public interface DashboardService {
     List<Bill> getDrafts();
 
     List<BillDTO> getPublishedV2(String locale);
+
+    List<BillDTO> filterBills(String locale, String billType, String ministry, String status, Long lokSabhaId, Long lokSabhaSessionId, Long rajyaSabhaId, String introducedIn, String passedIn, Long pendingStatus, Boolean isOrdinanceReplacingBill, String referredToCommittee,String introducedBy);
 }

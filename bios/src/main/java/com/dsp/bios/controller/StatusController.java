@@ -28,7 +28,7 @@ public class StatusController {
 
 
     @PostMapping("/main/update/{billId}")
-    public ResponseEntity<GenericResponse<Void>> updateBillStatuses(@PathVariable Long billId, @RequestBody List<BillStatusDTO> billStatusDTOs) {
+    public ResponseEntity<GenericResponse<Void>> updateBillStatuses(@PathVariable Long billId,@Valid @RequestBody List<BillStatusDTO> billStatusDTOs) {
         statusService.updateBillStatuses(billId, billStatusDTOs);
         GenericResponse<Void>  respBody= new GenericResponse<>();
         respBody.setSuccess(Boolean.TRUE);
@@ -38,7 +38,7 @@ public class StatusController {
     }
 
     @PostMapping("/pending/update/{billId}")
-    public ResponseEntity<GenericResponse<Void>> updateBillPendingStatuses(@PathVariable Long billId, @RequestBody List<PendingStatusDTO> dto) {
+    public ResponseEntity<GenericResponse<Void>> updateBillPendingStatuses(@PathVariable Long billId,@Valid @RequestBody List<PendingStatusDTO> dto) {
         statusService.createOrUpdatePendingStatuses(billId, dto);
         GenericResponse<Void>  respBody= new GenericResponse<>();
         respBody.setSuccess(Boolean.TRUE);
@@ -48,7 +48,7 @@ public class StatusController {
     }
 
     @PostMapping("/passed/update/{billId}")
-    public ResponseEntity<GenericResponse<Void>> updateBillPassedStatuses(@PathVariable Long billId, @RequestBody List<PassedStatusDTO> dto) {
+    public ResponseEntity<GenericResponse<Void>> updateBillPassedStatuses(@PathVariable Long billId, @Valid @RequestBody List<PassedStatusDTO> dto) {
         statusService.createOrUpdatePassedStatuses(billId, dto);
         GenericResponse<Void>  respBody= new GenericResponse<>();
         respBody.setSuccess(Boolean.TRUE);

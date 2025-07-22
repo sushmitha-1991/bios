@@ -34,6 +34,14 @@ public class DashboardServiceImpl implements DashboardService {
          List<BillDAO> daos = dashboardDAOService.getPublished(locale);
         return  dtoToDao(daos,locale);
     }
+
+    @Override
+    public List<BillDTO> filterBills(String locale, String billType, String ministry, String status, Long lokSabhaId, Long lokSabhaSessionId, Long rajyaSabhaId, String introducedIn, String passedIn, Long pendingStatus, Boolean isOrdinanceReplacingBill, String referredToCommittee,String introducedBy) {
+        List<BillDAO> daos = dashboardDAOService.filterBills(locale, billType, ministry, status, lokSabhaId, lokSabhaSessionId, rajyaSabhaId, introducedIn, passedIn, pendingStatus, isOrdinanceReplacingBill, referredToCommittee,introducedBy);
+        return  dtoToDao(daos,locale);
+
+    }
+
     public List<BillDTO> dtoToDao(List<BillDAO> dtos, String locale) {
         return dtos.stream().map(dto -> {
             BillDTO dao = new BillDTO();

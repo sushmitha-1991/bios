@@ -39,6 +39,29 @@ public class Dashboard {
         response.setMessage("SUCCESS");
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/v2/filter")
+    ResponseEntity<GenericResponse<List<BillDTO>>> getPublishedDAO(@RequestParam(defaultValue = "en") String locale,
+                                                                   @RequestParam(required = false) String billCategoryAbbr,
+                                                                   @RequestParam(required = false) String ministryAbbr,
+                                                                   @RequestParam(required = false) String statusAbbr,
+                                                                   @RequestParam(required = false) Long lokSabhaId,
+                                                                   @RequestParam(required = false) Long lokSabhaSessionId,
+                                                                   @RequestParam(required = false) Long rajyaSabhaId,
+                                                                   @RequestParam(required = false) String introducedIn,
+                                                                   @RequestParam(required = false) String introducedBy,
+                                                                   @RequestParam(required = false) String passedIn,
+                                                                   @RequestParam(required = false) Long pendingStatusId,
+                                                                   @RequestParam(required = false) Boolean isOrdinanceReplacingBill,
+                                                                   @RequestParam(required = false) String referredToCommittee
+                                                                   ) {
+        GenericResponse<List<BillDTO>> response =new GenericResponse<>();
+        response.setData( dashboardService.filterBills(locale, billCategoryAbbr, ministryAbbr, statusAbbr, lokSabhaId, lokSabhaSessionId, rajyaSabhaId, introducedIn, passedIn, pendingStatusId, isOrdinanceReplacingBill, referredToCommittee,introducedBy)
+     );
+        response.setSuccess(Boolean.TRUE);
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("SUCCESS");
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/drafts")
     ResponseEntity<GenericResponse<List<Bill>>> getDrafts() {
