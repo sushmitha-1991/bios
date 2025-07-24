@@ -116,7 +116,7 @@ public class DashBoardDAOServiceImpl implements DashBoardDAOService {
             parameters.addValue("referredToCommittee", referredToCommittee);
         }
 
-        if(introducedBy!=null){
+        if(StringUtils.hasLength(introducedBy)){
             sbWhere.append(" AND b1_0.introduced_by = :introducedBy ");
             parameters.addValue("introducedBy", introducedBy);
         }
