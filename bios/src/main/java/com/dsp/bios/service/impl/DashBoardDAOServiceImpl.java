@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -49,18 +50,18 @@ public class DashBoardDAOServiceImpl implements DashBoardDAOService {
         StringBuilder sbWhere = new StringBuilder(where);
 
 
-        if (billCategoryAbbr != null) {
+        if (StringUtils.hasLength(billCategoryAbbr)) {
             sbWhere.append(" AND b1_0.bill_category_abbr = :billCategory ");
             parameters.addValue("billCategory", billCategoryAbbr);
         }
 
         // Add ministry condition
-        if (ministryAbbr != null) {
+        if (StringUtils.hasLength(ministryAbbr)) {
             sbWhere.append(" AND b1_0.ministry_abbr = :ministry ");
             parameters.addValue("ministry", ministryAbbr);
         }
 
-        if (statusAbbr != null) {
+        if (StringUtils.hasLength(statusAbbr)) {
             sbWhere.append(" AND c1.abbr = :status ");
             parameters.addValue("status", statusAbbr);
         }
@@ -80,15 +81,18 @@ public class DashBoardDAOServiceImpl implements DashBoardDAOService {
             parameters.addValue("rajyaSabhaId", rajyaSabhaId);
         }
 
-        if (introducedIn != null) {
+        if (StringUtils.hasLength(introducedIn)) {
             sbWhere.append(" AND b1_0.house_abbr = :introducedIn ");
             parameters.addValue("introducedIn", introducedIn);
         }
 
-        if (passedIn != null) {
+        if (StringUtils.hasLength(passedIn)) {
             MapSqlParameterSource passedInParam = new MapSqlParameterSource();
             passedInParam.addValue("status",passedIn);
             List<Long> billIds=namedParameterJdbcTemplate.queryForList(passedStatusCTE,passedInParam , Long.class);
+            if(billIds.isEmpty()){
+                return List.of();
+            }
             sbWhere.append(" AND b1_0.id in ( :billIds ) ");
             parameters.addValue("billIds", billIds);
         }
@@ -106,7 +110,7 @@ public class DashBoardDAOServiceImpl implements DashBoardDAOService {
         }
 
 
-        if (referredToCommittee != null) {
+        if (StringUtils.hasLength(referredToCommittee )) {
             sbSelect.append("  inner join  bills.refer_to_committee rtc on rtc.bill_id= b1_0.id  ");
             sbWhere.append(" AND b1_0.r.committee_data::json->>'committeeTypeAbbr' = :referredToCommittee ");
             parameters.addValue("referredToCommittee", referredToCommittee);
