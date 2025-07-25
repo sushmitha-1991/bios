@@ -5,8 +5,6 @@
  */
 package com.dsp.bios.config;
 
-import com.dsp.bios.filter.JwtFilter;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,17 +25,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.dsp.bios.exception.CustomAccessDeniedHandler;
 import com.dsp.bios.filter.JwtFilter;
 import com.dsp.bios.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
 	private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
 	@Autowired
 	private JwtFilter jwtFilter;
+
+	@Autowired
+	private CustomAccessDeniedHandler customAccessDeniedHandler;
 
 	@Bean
 	public UserDetailsService userDetailsService() {
@@ -71,19 +75,17 @@ public class SecurityConfig {
 		log.debug("Configuring SecurityFilterChain");
 
 		http.authorizeHttpRequests((authz) -> authz.requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
-						"/swagger-ui.html",
-						"/api_ls/business/**",
-						"/api_rs/business/**"
+				"/swagger-ui.html", "/api_ls/business/**", "/api_rs/business/**"
 
-				).permitAll().anyRequest().authenticated())
+		).permitAll().requestMatchers("/**").hasRole("ADMIN").anyRequest().authenticated())
 				.csrf(AbstractHttpConfigurer::disable).authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-		http.exceptionHandling((ex) -> ex.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
+		http.exceptionHandling((ex) -> ex.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+				.accessDeniedHandler(customAccessDeniedHandler))
 				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		log.debug("SecurityFilterChain configured successfully");
 		return http.build();
 	}
 }
-

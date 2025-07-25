@@ -5,14 +5,8 @@
  */
 package com.dsp.bios.filter;
 
+import java.io.IOException;
 
-import com.dsp.bios.service.CustomUserDetailsService;
-import com.dsp.bios.util.JwtUtil;
-import io.jsonwebtoken.JwtException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +17,14 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
+import com.dsp.bios.service.CustomUserDetailsService;
+import com.dsp.bios.util.JwtUtil;
+
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -67,6 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
 					usernamePasswordAuthenticationToken
 							.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
 					log.debug("User authenticated successfully: {}", username);
 				} else {
 					log.error("JWT token validation failed or user is not enabled for username: {}", username);
