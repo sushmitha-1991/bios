@@ -155,9 +155,42 @@ public class BillServicers {
         return new BillResponseDTO(metadata, records);
     }
 
+//    private BillRecord mapToRecord(ResultSet rs, int rowNum) throws SQLException {
+//        String uploadJson = rs.getString("upload_bill_text");
+//        String fileUrl = extractFileUrl(uploadJson);
+//
+//        return BillRecord.builder()
+//                .billNumber(rs.getString("bill_no"))
+//                .billName(rs.getString("bill_category"))
+//                .billType(rs.getString("introduced_by"))
+//                .billCategory(rs.getString("bill_category"))
+//                .ministryName(rs.getString("ministry"))
+//                .billYear(rs.getObject("bill_year") != null ? rs.getLong("bill_year") : null)
+//                .billIntroducedInHouse(rs.getString("house_name"))
+//                .billIntroducedBy(rs.getString("introduced_by"))
+//                .billIntroducedDate(rs.getString("date_of_introduction"))
+//                .billIntroducedFile(fileUrl)
+//                .status(rs.getString("status"))
+//                .build();
+//    }
+//
+//    private String extractFileUrl(String json) {
+//        if (json == null || json.isBlank()) return null;
+//        try {
+//            JsonNode node = objectMapper.readTree(json);
+//            JsonNode files = node.get("files");
+//            if (files != null && files.isArray() && files.size() > 0) {
+//                String fileName = files.get(0).get("fileName").asText();
+//                return "https://sansad.in/getFile/BillsTexts/LSBillTexts/Asintroduced/" + fileName + "?source=legislation";
+//            }
+//        } catch (Exception e) {
+//            // logging can be added here
+//        }
+//        return null;
+//    }
+
     private BillRecord mapToRecord(ResultSet rs, int rowNum) throws SQLException {
         String uploadJson = rs.getString("upload_bill_text");
-        String fileUrl = extractFileUrl(uploadJson);
 
         return BillRecord.builder()
                 .billNumber(rs.getString("bill_no"))
@@ -169,24 +202,19 @@ public class BillServicers {
                 .billIntroducedInHouse(rs.getString("house_name"))
                 .billIntroducedBy(rs.getString("introduced_by"))
                 .billIntroducedDate(rs.getString("date_of_introduction"))
-                .billIntroducedFile(fileUrl)
+                .billIntroducedFile(extractFileJson(uploadJson))
                 .status(rs.getString("status"))
                 .build();
     }
 
-    private String extractFileUrl(String json) {
+    private String extractFileJson(String json) {
         if (json == null || json.isBlank()) return null;
         try {
             JsonNode node = objectMapper.readTree(json);
-            JsonNode files = node.get("files");
-            if (files != null && files.isArray() && files.size() > 0) {
-                String fileName = files.get(0).get("fileName").asText();
-                return "https://sansad.in/getFile/BillsTexts/LSBillTexts/Asintroduced/" + fileName + "?source=legislation";
-            }
+            return node.toString();
         } catch (Exception e) {
-            // logging can be added here
+            return null;
         }
-        return null;
     }
 
    }
