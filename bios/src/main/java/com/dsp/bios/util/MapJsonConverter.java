@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 @Converter
 public class MapJsonConverter implements AttributeConverter<Map<String, Object>, String> {
 
-	private static final ObjectMapper objectMapper = new ObjectMapper();
+	public static final ObjectMapper objectMapper = new ObjectMapper();
 	private static final Logger logger = LoggerFactory.getLogger(MapJsonConverter.class);
 
 	static {
