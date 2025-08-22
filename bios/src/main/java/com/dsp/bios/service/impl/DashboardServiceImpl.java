@@ -1,19 +1,25 @@
 package com.dsp.bios.service.impl;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import com.dsp.bios.dto.BillDTO;
+import com.dsp.bios.dto.DashboardBillsResponseDTO;
+import com.dsp.bios.dto.UserDetailsDTO;
 import com.dsp.bios.entity.Bill;
 import com.dsp.bios.repository.LSBillsViewDetailRepository;
 import com.dsp.bios.service.DashBoardDAOService;
 import com.dsp.bios.service.DashboardService;
 import com.dsp.bios.service.dao.BillDAO;
-import com.dsp.bios.util.UserUtils;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -61,5 +67,33 @@ public class DashboardServiceImpl implements DashboardService {
 
             return dao;
         }).collect(Collectors.toList());
+    }
+    
+    private Long getHouseId() {
+        Long houseId = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetailsDTO) {
+            houseId = ((UserDetailsDTO) principal).getHouseId();
+        }
+        return houseId;
+    }
+    
+    @Override
+    public List<DashboardBillsResponseDTO> getMgmtDashboardBills(String billType, String lokSabhaNo, String sessionNo)
+    {
+    	Long houseId=getHouseId();
+    	
+    		List<Object[]> results = (houseId==2) ? billsView.getBillsCountByLokSabha(billType,lokSabhaNo,sessionNo)
+    				:billsView.getBillsCountByRajyaSabha(billType, sessionNo);
+    		
+    		return results.isEmpty() ? Collections.emptyList() : results.stream()
+                    .map(row -> new DashboardBillsResponseDTO(
+                    		row[0] != null ? row[0].toString() : null, // sessionNo
+                            row[1] != null ? row[1].toString() : null, // totalBillsIntroduced
+                            row[2] != null ? row[2].toString() : null, // billsPending
+                            row[3] != null ? row[3].toString() : null, //billsPassed		
+                            row[4] != null ? row[4].toString() : null // billsLapsed
+                    		))
+                    .toList();
     }
 }
