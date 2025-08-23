@@ -22,31 +22,38 @@ public interface LSBillsViewDetailRepository extends JpaRepository<Bill, Long> {
     boolean checkIfBillNumberAlreadyExitsNotForId(String billNumber, Long billYear,Long id);
     
     @Query(value="""
-			    		select lok_sabha_session_number as sessionNo,count(id) as totalBillsIntroduced,
+			    		select
+			    		case
+			    		when house_abbr = 'LS' then lok_sabha_session_number
+			    		when house_abbr = 'RS' then raj_sabha_session_number
+			    		end as sessionNo,
+			    		 count(id) as totalBillsIntroduced,
 			count(*) filter (where status_abbr ='BILL_STATUS_PENDING') as billsPending,
 			count(*) filter (where status_abbr ='BILL_STATUS_PASSED') as billsPassed,
 			count(*) filter (where status_abbr ='BILL_STATUS_LAPSED') as billsLapsed
 			from bills.bill
-			where house_abbr='LS' and lok_sabha_session_number is not null 
-			and (cast(:billType as varchar) is null or introduced_by=cast(:billType as varchar))
+			where house_abbr=cast(:houseAbbr as varchar)
+			and(
+			(cast(:houseAbbr as varchar) ='LS' and lok_sabha_session_number is not null
 			and (cast(:lokSabhaNo as varchar) is null or lok_sabha_number=cast(:lokSabhaNo as varchar))
-			and (cast(:sessionNo as varchar) is null or lok_sabha_session_number=cast(:sessionNo as varchar))
-			group by lok_sabha_session_number
-    		
+			and (cast(:sessionNo as varchar) is null or lok_sabha_session_number=cast(:sessionNo as varchar)))
+			or
+			(cast(:houseAbbr as varchar) ='RS' and raj_sabha_session_number is not null
+			and (cast(:sessionNo as varchar) is null or raj_sabha_session_number=cast(:sessionNo as varchar)))
+			)
+			and (cast(:billType as varchar) is null or introduced_by=cast(:billType as varchar))
+			group by
+			 		case
+			    		when house_abbr = 'LS' then lok_sabha_session_number
+			    		when house_abbr = 'RS' then raj_sabha_session_number
+			    		end
     		""",nativeQuery = true)
-    List<Object[]> getBillsCountByLokSabha(@Param("billType") String billType, @Param("lokSabhaNo") String lokSabhaNo, @Param("sessionNo") String sessionNo);
+    List<Object[]> getBillsCountByLokSabhaAndRajyaSabha(@Param("houseAbbr") String houseAbbr,@Param("billType") String billType, @Param("lokSabhaNo") String lokSabhaNo, @Param("sessionNo") String sessionNo);
     
-@Query(value="""
-				select raj_sabha_session_number as sessionNo,count(id) as govtIntroduced,
-		count(*) filter (where status_abbr ='BILL_STATUS_PENDING') as govtPending,
-		count(*) filter (where status_abbr ='BILL_STATUS_PASSED') as govtPassed,
-		count(*) filter (where status_abbr ='BILL_STATUS_LAPSED') as govtLapsed
-		from bills.bill
-		where house_abbr='RS' and raj_sabha_session_number is not null
-		and (cast(:billType as varchar) is null or introduced_by=cast(:billType as varchar))
-		and (cast(:sessionNo as varchar) is null or raj_sabha_session_number=cast(:sessionNo as varchar))
-		group by raj_sabha_session_number
-		
-    		""",nativeQuery = true)
-    List<Object[]> getBillsCountByRajyaSabha(@Param("billType") String billType, @Param("sessionNo") String sessionNo);
+//    @Query(value="""
+//    		
+//
+//""",nativeQuery = true)
+//List<Object[]> getTotalIntroducedBillsDetails(@Param("billType") String billType, @Param("lokSabhaNo") String lokSabhaNo, @Param("sessionNo") String sessionNo);
+    
 }

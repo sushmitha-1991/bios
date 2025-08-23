@@ -82,9 +82,9 @@ public class DashboardServiceImpl implements DashboardService {
     public List<DashboardBillsResponseDTO> getMgmtDashboardBills(String billType, String lokSabhaNo, String sessionNo)
     {
     	Long houseId=getHouseId();
+    	String houseAbbr= (houseId==2) ? "LS" : "RS";
     	
-    		List<Object[]> results = (houseId==2) ? billsView.getBillsCountByLokSabha(billType,lokSabhaNo,sessionNo)
-    				:billsView.getBillsCountByRajyaSabha(billType, sessionNo);
+    		List<Object[]> results = billsView.getBillsCountByLokSabhaAndRajyaSabha(houseAbbr,billType,lokSabhaNo,sessionNo);
     		
     		return results.isEmpty() ? Collections.emptyList() : results.stream()
                     .map(row -> new DashboardBillsResponseDTO(
