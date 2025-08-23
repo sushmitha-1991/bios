@@ -2,6 +2,7 @@ package com.dsp.bios.controller;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dsp.bios.dto.BillDTO;
-import com.dsp.bios.dto.DashboardBillsResponseDTO;
+import com.dsp.bios.dto.DashboardBillsCountResponseDTO;
+import com.dsp.bios.dto.DashboardBillsDetailsResponseDTO;
 import com.dsp.bios.entity.Bill;
 import com.dsp.bios.response.GenericResponse;
 import com.dsp.bios.service.DashBoardDAOService;
@@ -80,11 +82,23 @@ public class Dashboard {
     }
     
     @GetMapping("/management-dashboard-bills-count")
-    ResponseEntity<GenericResponse<List<DashboardBillsResponseDTO>>> getMgmtDashboardBills(@RequestParam(required = false) String billType,
+    ResponseEntity<GenericResponse<List<DashboardBillsCountResponseDTO>>> getMgmtDashboardBillsCount(@RequestParam(required = false) String billType,
     		@RequestParam(required = false) String lokSabhaNo,
     		@RequestParam(required = false) String sessionNo) {
-        GenericResponse<List<DashboardBillsResponseDTO>> response =new GenericResponse<>();
-        response.setData(dashboardService.getMgmtDashboardBills(billType,lokSabhaNo,sessionNo));
+        GenericResponse<List<DashboardBillsCountResponseDTO>> response =new GenericResponse<>();
+        response.setData(dashboardService.getMgmtDashboardBillsCount(billType,lokSabhaNo,sessionNo));
+        response.setSuccess(Boolean.TRUE);
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("SUCCESS");
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/management-dashboard-bill-details")
+    ResponseEntity<GenericResponse<Map<String, List<DashboardBillsDetailsResponseDTO>>>> getMgmtDashboardBillsDetails(@RequestParam(required = false) String billType,
+    		@RequestParam(required = false) String lokSabhaNo,
+    		@RequestParam(required = false) String sessionNo) {
+        GenericResponse<Map<String, List<DashboardBillsDetailsResponseDTO>>> response =new GenericResponse<>();
+        response.setData(dashboardService.getMgmtDashboardBillsDetails(billType,lokSabhaNo,sessionNo));
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("SUCCESS");
