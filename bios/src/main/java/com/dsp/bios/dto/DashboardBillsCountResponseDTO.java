@@ -10,14 +10,14 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class DashboardBillsResponseDTO {
+public class DashboardBillsCountResponseDTO {
 
 	String sessionNo;
 	String totalBillsIntroduced;
 	String billsPending;
 	String billsPassed;
 	String billsLapsed;
-	public DashboardBillsResponseDTO(String sessionNo, String totalBillsIntroduced, String billsPending,
+	public DashboardBillsCountResponseDTO(String sessionNo, String totalBillsIntroduced, String billsPending,
 			String billsPassed, String billsLapsed) {
 		super();
 		this.sessionNo = sessionNo;
