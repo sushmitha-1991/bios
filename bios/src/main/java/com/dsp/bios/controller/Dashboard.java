@@ -1,18 +1,24 @@
 package com.dsp.bios.controller;
 
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dsp.bios.dto.BillDTO;
+import com.dsp.bios.dto.DashboardBillsResponseDTO;
 import com.dsp.bios.entity.Bill;
 import com.dsp.bios.response.GenericResponse;
 import com.dsp.bios.service.DashBoardDAOService;
 import com.dsp.bios.service.DashboardService;
+
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -67,6 +73,18 @@ public class Dashboard {
     ResponseEntity<GenericResponse<List<Bill>>> getDrafts() {
         GenericResponse<List<Bill>> response =new GenericResponse<>();
         response.setData(  dashboardService.getDrafts());
+        response.setSuccess(Boolean.TRUE);
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("SUCCESS");
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/management-dashboard-bills-count")
+    ResponseEntity<GenericResponse<List<DashboardBillsResponseDTO>>> getMgmtDashboardBills(@RequestParam(required = false) String billType,
+    		@RequestParam(required = false) String lokSabhaNo,
+    		@RequestParam(required = false) String sessionNo) {
+        GenericResponse<List<DashboardBillsResponseDTO>> response =new GenericResponse<>();
+        response.setData(dashboardService.getMgmtDashboardBills(billType,lokSabhaNo,sessionNo));
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("SUCCESS");
