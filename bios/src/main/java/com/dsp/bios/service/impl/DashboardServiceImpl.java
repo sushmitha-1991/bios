@@ -22,6 +22,7 @@ import com.dsp.bios.repository.LSBillsViewDetailRepository;
 import com.dsp.bios.service.DashBoardDAOService;
 import com.dsp.bios.service.DashboardService;
 import com.dsp.bios.service.dao.BillDAO;
+import com.dsp.bios.util.DateFormatterUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -148,9 +149,41 @@ public class DashboardServiceImpl implements DashboardService {
 				try {
 					JsonNode node = objectMapper.readTree(row[10].toString());
 					actNo = node.has("actNo") ? node.get("actNo").asText() : null;
-					assentDate = node.has("dateOfAssented") ? node.get("dateOfAssented").asText() : null;
+//					assentDate = node.has("dateOfAssented") ? node.get("dateOfAssented").asText() : null;
+					if (node.has("dateOfAssented") && node.get("dateOfAssented").isArray()) {
+			            JsonNode dateArray = node.get("dateOfAssented");
+			            if (dateArray!=null && dateArray.size() == 3) {
+			            	try {
+			                int year = dateArray.get(0).asInt();
+			                int month = dateArray.get(1).asInt();
+			                int day = dateArray.get(2).asInt();
+			                passedDate = String.format("%04d-%02d-%02d", year, month, day);
+			            	}
+			            	catch(Exception e)
+			            	{
+			            		log.error("Invalid assent Date", e);
+			            	}
+			            }
+					}
 					passedIn = node.has("passedIn") ? node.get("passedIn").asText() : null;
-					passedDate = node.has("passedDate") ? node.get("passedDate").asText() : null;
+//					passedDate = node.has("passedDate") ? node.get("passedDate").asText() : null;
+//					passedDate is array
+					if (node.has("passedDate") && node.get("passedDate").isArray()) {
+			            JsonNode dateArray = node.get("passedDate");
+			            if (dateArray!=null && dateArray.size() == 3) {
+			            	try {
+			                int year = dateArray.get(0).asInt();
+			                int month = dateArray.get(1).asInt();
+			                int day = dateArray.get(2).asInt();
+			                passedDate = String.format("%04d-%02d-%02d", year, month, day);
+			            	}
+			            	catch(Exception e)
+			            	{
+			            		log.error("Invalid passed Date", e);
+			            	}
+			            }
+					}
+					System.out.println("act- "+actNo+" assent date -"+assentDate+" passedin "+passedIn+" passed date -"+passedDate);
 				} catch (Exception e) {
 					log.error("Error parsing entryData JSON", e);
 				}
@@ -167,10 +200,10 @@ public class DashboardServiceImpl implements DashboardService {
 					.ministry(row[7] != null ? row[7].toString() : null)
 					.memberName(row[8] != null ? row[8].toString() : null)
 					.passedIn(passedIn)
-					.passedDate(passedDate)
-					.introductionDate(row[9] != null ? row[9].toString() : null)
+					.passedDate(passedDate != null && !"null".equalsIgnoreCase(passedDate)? DateFormatterUtil.formatDate(passedDate):null)
+					.introductionDate(row[9] != null && !"null".equalsIgnoreCase(row[9].toString())? DateFormatterUtil.formatDate(row[9].toString()) : null)
 					.actNo(actNo)
-					.assentDate(assentDate)
+					.assentDate(assentDate != null && !"null".equalsIgnoreCase(assentDate)? DateFormatterUtil.formatDate(assentDate) : null)
 					.build();
 		}).toList();
     }
