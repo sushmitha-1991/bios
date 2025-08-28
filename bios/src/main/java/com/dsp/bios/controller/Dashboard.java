@@ -1,6 +1,7 @@
 package com.dsp.bios.controller;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -89,19 +90,22 @@ public class Dashboard {
         response.setData(dashboardService.getMgmtDashboardBillsCount(billType,lokSabhaNo,sessionNo));
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("SUCCESS");
+        response.setMessage("Dashboard Bill counts fetched successfully");
         return ResponseEntity.ok(response);
     }
     
     @GetMapping("/management-dashboard-bill-details")
     ResponseEntity<GenericResponse<Map<String, List<DashboardBillsDetailsResponseDTO>>>> getMgmtDashboardBillsDetails(@RequestParam(required = false) String billType,
     		@RequestParam(required = false) String lokSabhaNo,
-    		@RequestParam(required = false) String sessionNo) {
+    		@RequestParam(required = false) String sessionNo,
+    		@RequestParam(required = false) LocalDate fromDate,
+    		@RequestParam(required = false) LocalDate toDate,
+    		@RequestParam(required = false) Long memberId) {
         GenericResponse<Map<String, List<DashboardBillsDetailsResponseDTO>>> response =new GenericResponse<>();
-        response.setData(dashboardService.getMgmtDashboardBillsDetails(billType,lokSabhaNo,sessionNo));
+        response.setData(dashboardService.getMgmtDashboardBillsDetails(billType,lokSabhaNo,sessionNo,fromDate,toDate,memberId));
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("SUCCESS");
+        response.setMessage("Dashboard Bill details fetched successfully");
         return ResponseEntity.ok(response);
     }
 }

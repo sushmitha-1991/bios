@@ -18,4 +18,9 @@ public class DateFormatterUtil {
     	 LocalDate date = LocalDate.parse(inputDate, inputFormatter);
          return date.format(FORMATTER);
     }
+	 
+	 public static LocalDate addDatePlusOne(LocalDate date)
+		{
+			return date.plusDays(1); //Add 1 Day to toDate filter
+		}
 }
