@@ -13,17 +13,11 @@ import lombok.experimental.FieldDefaults;
 public class DashboardBillsCountResponseDTO {
 
 	String sessionNo;
+	String sessionNoId;
+	String lokSabhaNo;
+	String lokSabhaNoId;
 	String totalBillsIntroduced;
 	String billsPending;
 	String billsPassed;
 	String billsLapsed;
-	public DashboardBillsCountResponseDTO(String sessionNo, String totalBillsIntroduced, String billsPending,
-			String billsPassed, String billsLapsed) {
-		super();
-		this.sessionNo = sessionNo;
-		this.totalBillsIntroduced = totalBillsIntroduced;
-		this.billsPending = billsPending;
-		this.billsPassed = billsPassed;
-		this.billsLapsed = billsLapsed;
-	}
 }

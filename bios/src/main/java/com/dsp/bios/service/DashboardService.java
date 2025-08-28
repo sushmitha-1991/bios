@@ -1,5 +1,6 @@
 package com.dsp.bios.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -18,5 +19,6 @@ public interface DashboardService {
     List<BillDTO> filterBills(String locale, String billType, String ministry, String status, Long lokSabhaId, Long lokSabhaSessionId, Long rajyaSabhaId, String introducedIn, String passedIn, Long pendingStatus, Boolean isOrdinanceReplacingBill, String referredToCommittee,String introducedBy);
 
     public List<DashboardBillsCountResponseDTO> getMgmtDashboardBillsCount(String billType, String lokSabhaNo, String sessionNo);
-    public Map<String, List<DashboardBillsDetailsResponseDTO>> getMgmtDashboardBillsDetails(String billType, String lokSabhaNo, String sessionNo);
+    public Map<String, List<DashboardBillsDetailsResponseDTO>> getMgmtDashboardBillsDetails(String billType, String lokSabhaNo, String sessionNo,
+    		LocalDate fromDate, LocalDate toDate,Long memberId);
 }

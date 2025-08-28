@@ -17,6 +17,7 @@ public class DashboardBillsDetailsResponseDTO {
 	String lokSabhaSessionNo;
 	String rajyaSabhaSessionNo;
 	String shortTitle;
+	String billType;
 	String billCategory;
 	String status;
 	String ministry;

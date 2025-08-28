@@ -1,5 +1,6 @@
 package com.dsp.bios.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -103,18 +104,22 @@ public class DashboardServiceImpl implements DashboardService {
     		List<Object[]> results = billsView.getBillsCountByLokSabhaAndRajyaSabha(houseAbbr,billType,lokSabhaNo,sessionNo);
     		
     		return results.isEmpty() ? Collections.emptyList() : results.stream()
-                    .map(row -> new DashboardBillsCountResponseDTO(
-                    		row[0] != null ? row[0].toString() : null, // sessionNo
-                            row[1] != null ? row[1].toString() : null, // totalBillsIntroduced
-                            row[2] != null ? row[2].toString() : null, // billsPending
-                            row[3] != null ? row[3].toString() : null, //billsPassed		
-                            row[4] != null ? row[4].toString() : null // billsLapsed
-                    		))
-                    .toList();
+                    .map(row -> DashboardBillsCountResponseDTO.builder()
+                    		.sessionNo(row[0] != null ? row[0].toString() : null)
+                    		.sessionNoId(row[1] != null ? row[1].toString() : null)
+                    		.lokSabhaNo(row[2] != null ? row[2].toString() : null)
+                    		.lokSabhaNoId(row[3] != null ? row[3].toString() : null)
+                    		.totalBillsIntroduced(row[4] != null ? row[4].toString() : null)
+                    		.billsPending(row[5] != null ? row[5].toString() : null)
+                    		.billsPassed(row[6] != null ? row[6].toString() : null)
+                    		.billsLapsed(row[7] != null ? row[7].toString() : null)
+                    		.build()
+                    		).toList();
     }
     
     @Override
-    public Map<String, List<DashboardBillsDetailsResponseDTO>> getMgmtDashboardBillsDetails(String billType, String lokSabhaNo, String sessionNo)
+    public Map<String, List<DashboardBillsDetailsResponseDTO>> getMgmtDashboardBillsDetails(String billType, String lokSabhaNo, String sessionNo,
+    		LocalDate fromDate, LocalDate toDate,Long memberId)
     {
     	Map<String, List<DashboardBillsDetailsResponseDTO>> response = new HashMap<>();
 		List<DashboardBillsDetailsResponseDTO> dataList = new ArrayList<>();
@@ -122,11 +127,11 @@ public class DashboardServiceImpl implements DashboardService {
 		String houseAbbr = (houseId == 2) ? "LS" : "RS";
 
 		List<Object[]> introducedResults = billsView.getAllBillsDetails(null, houseAbbr, billType, lokSabhaNo,
-				sessionNo);
+				sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId);
 		List<Object[]> pendingResults = billsView.getAllBillsDetails(pending, houseAbbr, billType, lokSabhaNo,
-				sessionNo);
-		List<Object[]> passedResults = billsView.getAllBillsDetails(passed, houseAbbr, billType, lokSabhaNo, sessionNo);
-		List<Object[]> lapsedResults = billsView.getAllBillsDetails(lapsed, houseAbbr, billType, lokSabhaNo, sessionNo);
+				sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId);
+		List<Object[]> passedResults = billsView.getAllBillsDetails(passed, houseAbbr, billType, lokSabhaNo, sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId);
+		List<Object[]> lapsedResults = billsView.getAllBillsDetails(lapsed, houseAbbr, billType, lokSabhaNo, sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId);
 
 		response.put("introducedBills",mapResponseToDto(introducedResults));
 		response.put("pendingBills",mapResponseToDto(pendingResults));
@@ -147,7 +152,7 @@ public class DashboardServiceImpl implements DashboardService {
 
 			if (row[10] != null) { // entryData JSON column
 				try {
-					JsonNode node = objectMapper.readTree(row[10].toString());
+					JsonNode node = objectMapper.readTree(row[11].toString());
 					actNo = node.has("actNo") ? node.get("actNo").asText() : null;
 //					assentDate = node.has("dateOfAssented") ? node.get("dateOfAssented").asText() : null;
 					if (node.has("dateOfAssented") && node.get("dateOfAssented").isArray()) {
@@ -195,13 +200,14 @@ public class DashboardServiceImpl implements DashboardService {
 					.lokSabhaSessionNo(row[2] != null ? row[2].toString() : null)
 					.rajyaSabhaSessionNo(row[3] != null ? row[3].toString() : null)
 					.shortTitle(row[4] != null ? row[4].toString() : null)
-					.billCategory(row[5] != null ? row[5].toString() : null)
-					.status(row[6] != null ? row[6].toString() : null)
-					.ministry(row[7] != null ? row[7].toString() : null)
-					.memberName(row[8] != null ? row[8].toString() : null)
+					.billType(row[5] != null ? row[5].toString() : null)
+					.billCategory(row[6] != null ? row[6].toString() : null)
+					.status(row[7] != null ? row[7].toString() : null)
+					.ministry(row[8] != null ? row[8].toString() : null)
+					.memberName(row[9] != null ? row[9].toString() : null)
 					.passedIn(passedIn)
 					.passedDate(passedDate != null && !"null".equalsIgnoreCase(passedDate)? DateFormatterUtil.formatDate(passedDate):null)
-					.introductionDate(row[9] != null && !"null".equalsIgnoreCase(row[9].toString())? DateFormatterUtil.formatDate(row[9].toString()) : null)
+					.introductionDate(row[10] != null && !"null".equalsIgnoreCase(row[10].toString())? DateFormatterUtil.formatDate(row[10].toString()) : null)
 					.actNo(actNo)
 					.assentDate(assentDate != null && !"null".equalsIgnoreCase(assentDate)? DateFormatterUtil.formatDate(assentDate) : null)
 					.build();
