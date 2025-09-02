@@ -2,6 +2,9 @@ package com.dsp.bios.repository;
 
 
 import com.dsp.bios.entity.Bill;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -93,11 +96,31 @@ public interface LSBillsViewDetailRepository extends JpaRepository<Bill, Long> {
 			and (cast(:fromDate as DATE) is null or b.date_of_introduction >=cast(:fromDate as DATE))
 			and (cast(:toDate as DATE) is null or b.date_of_introduction <cast(:toDate as DATE))
 			and (:memberId is null or b.member_id=:memberId)
-
-    		""",nativeQuery = true)
-List<Object[]> getAllBillsDetails(@Param("statusAbbr") String statusAbbr,@Param("houseAbbr") String houseAbbr,
-		@Param("billType") String billType,@Param("lokSabhaNo") String lokSabhaNo,
-		@Param("sessionNo") String sessionNo,@Param("fromDate") LocalDate fromDate,@Param("toDate") LocalDate toDate,
-		@Param("memberId") Long memberId);
+    		""",
+    		countQuery = """
+					    select count(1)
+					    from bills.bill b
+					    left join bills.entry_data ed on ed.bill_id=b.id
+					    left join members.personal_details mpd on mpd.id=b.member_id
+					where house_abbr=cast(:houseAbbr as varchar)
+					and(
+					(cast(:houseAbbr as varchar) ='LS' and lok_sabha_session_number is not null
+					and (cast(:lokSabhaNo as varchar) is null or lok_sabha_number=cast(:lokSabhaNo as varchar))
+					and (cast(:sessionNo as varchar) is null or lok_sabha_session_number=cast(:sessionNo as varchar)))
+					or
+					(cast(:houseAbbr as varchar) ='RS' and raj_sabha_session_number is not null
+					and (cast(:sessionNo as varchar) is null or raj_sabha_session_number=cast(:sessionNo as varchar)))
+					)
+					and (cast(:billType as varchar) is null or introduced_by=cast(:billType as varchar))
+					and (cast(:statusAbbr as varchar) is null or status_abbr=cast(:statusAbbr as varchar))
+					and (cast(:fromDate as DATE) is null or b.date_of_introduction >=cast(:fromDate as DATE))
+					and (cast(:toDate as DATE) is null or b.date_of_introduction <cast(:toDate as DATE))
+					and (:memberId is null or b.member_id=:memberId)
+					""",
+    		nativeQuery = true)
+	Page<Object[]> getAllBillsDetails(@Param("statusAbbr") String statusAbbr, @Param("houseAbbr") String houseAbbr,
+			@Param("billType") String billType, @Param("lokSabhaNo") String lokSabhaNo,
+			@Param("sessionNo") String sessionNo, @Param("fromDate") LocalDate fromDate,
+			@Param("toDate") LocalDate toDate, @Param("memberId") Long memberId, Pageable pageable);
     
 }

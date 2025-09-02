@@ -95,14 +95,16 @@ public class Dashboard {
     }
     
     @GetMapping("/management-dashboard-bill-details")
-    ResponseEntity<GenericResponse<Map<String, List<DashboardBillsDetailsResponseDTO>>>> getMgmtDashboardBillsDetails(@RequestParam(required = false) String billType,
+    ResponseEntity<GenericResponse<Map<String, Object>>> getMgmtDashboardBillsDetails(@RequestParam(required = false) String billType,
     		@RequestParam(required = false) String lokSabhaNo,
     		@RequestParam(required = false) String sessionNo,
     		@RequestParam(required = false) LocalDate fromDate,
     		@RequestParam(required = false) LocalDate toDate,
-    		@RequestParam(required = false) Long memberId) {
-        GenericResponse<Map<String, List<DashboardBillsDetailsResponseDTO>>> response =new GenericResponse<>();
-        response.setData(dashboardService.getMgmtDashboardBillsDetails(billType,lokSabhaNo,sessionNo,fromDate,toDate,memberId));
+    		@RequestParam(required = false) Long memberId,
+    		@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        GenericResponse<Map<String, Object>> response =new GenericResponse<>();
+        response.setData(dashboardService.getMgmtDashboardBillsDetails(billType,lokSabhaNo,sessionNo,fromDate,toDate,memberId,page,size));
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("Dashboard Bill details fetched successfully");
