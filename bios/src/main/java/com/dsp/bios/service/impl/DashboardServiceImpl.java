@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -118,28 +122,42 @@ public class DashboardServiceImpl implements DashboardService {
     }
     
     @Override
-    public Map<String, List<DashboardBillsDetailsResponseDTO>> getMgmtDashboardBillsDetails(String billType, String lokSabhaNo, String sessionNo,
-    		LocalDate fromDate, LocalDate toDate,Long memberId)
+    public Map<String, Object> getMgmtDashboardBillsDetails(String billType, String lokSabhaNo, String sessionNo,
+    		LocalDate fromDate, LocalDate toDate,Long memberId,int page,int size)
     {
-    	Map<String, List<DashboardBillsDetailsResponseDTO>> response = new HashMap<>();
+//    	Map<String, List<DashboardBillsDetailsResponseDTO>> response = new HashMap<>();
 		List<DashboardBillsDetailsResponseDTO> dataList = new ArrayList<>();
+		Map<String, Object> response = new HashMap<>();
 		Long houseId = getHouseId();
 		String houseAbbr = (houseId == 2) ? "LS" : "RS";
 
-		List<Object[]> introducedResults = billsView.getAllBillsDetails(null, houseAbbr, billType, lokSabhaNo,
-				sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId);
-		List<Object[]> pendingResults = billsView.getAllBillsDetails(pending, houseAbbr, billType, lokSabhaNo,
-				sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId);
-		List<Object[]> passedResults = billsView.getAllBillsDetails(passed, houseAbbr, billType, lokSabhaNo, sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId);
-		List<Object[]> lapsedResults = billsView.getAllBillsDetails(lapsed, houseAbbr, billType, lokSabhaNo, sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId);
+		Pageable pageable = PageRequest.of(page, size, Sort.by("date_of_introduction").descending());
+		 Page<Object[]> introducedResults = billsView.getAllBillsDetails(null, houseAbbr, billType, lokSabhaNo,
+				sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId,pageable);
+		 Page<Object[]> pendingResults = billsView.getAllBillsDetails(pending, houseAbbr, billType, lokSabhaNo,
+				sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId,pageable);
+		 Page<Object[]> passedResults = billsView.getAllBillsDetails(passed, houseAbbr, billType, lokSabhaNo, sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId,pageable);
+		 Page<Object[]> lapsedResults = billsView.getAllBillsDetails(lapsed, houseAbbr, billType, lokSabhaNo, sessionNo,fromDate,toDate == null ? null :DateFormatterUtil.addDatePlusOne(toDate),memberId,pageable);
 
-		response.put("introducedBills",mapResponseToDto(introducedResults));
-		response.put("pendingBills",mapResponseToDto(pendingResults));
-		response.put("passedBills",mapResponseToDto(passedResults));
-		response.put("lapsedBills",mapResponseToDto(lapsedResults));
+		response.put("introducedBills",mapPageToDto(introducedResults));
+		response.put("pendingBills",mapPageToDto(pendingResults));
+		response.put("passedBills",mapPageToDto(passedResults));
+		response.put("lapsedBills",mapPageToDto(lapsedResults));
 
 		return response;
     }
+    
+    private Map<String, Object> mapPageToDto(Page<Object[]> page) {
+        List<DashboardBillsDetailsResponseDTO> dtos = mapResponseToDto(page.getContent());
+        Map<String, Object> map = new HashMap<>();
+        map.put("content", dtos);
+        map.put("page", page.getNumber());
+        map.put("size", page.getSize());
+        map.put("totalElements", page.getTotalElements());
+        map.put("totalPages", page.getTotalPages());
+        return map;
+    }
+   
     
     public List<DashboardBillsDetailsResponseDTO> mapResponseToDto(List<Object[]> results)
     {
@@ -213,4 +231,5 @@ public class DashboardServiceImpl implements DashboardService {
 					.build();
 		}).toList();
     }
+    
 }
