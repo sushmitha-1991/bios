@@ -100,9 +100,10 @@ public class DashboardServiceImpl implements DashboardService {
     }
     
     @Override
-    public List<DashboardBillsCountResponseDTO> getMgmtDashboardBillsCount(String billType, String lokSabhaNo, String sessionNo)
+    public List<DashboardBillsCountResponseDTO> getMgmtDashboardBillsCount(Long houseId,String billType, String lokSabhaNo, String sessionNo)
     {
-    	Long houseId=getHouseId();
+//    	Long houseId=getHouseId();
+    	
     	String houseAbbr= (houseId==2) ? "LS" : "RS";
     	
     		List<Object[]> results = billsView.getBillsCountByLokSabhaAndRajyaSabha(houseAbbr,billType,lokSabhaNo,sessionNo);
@@ -122,13 +123,13 @@ public class DashboardServiceImpl implements DashboardService {
     }
     
     @Override
-    public Map<String, Object> getMgmtDashboardBillsDetails(String billType, String lokSabhaNo, String sessionNo,
+    public Map<String, Object> getMgmtDashboardBillsDetails(Long houseId,String billType, String lokSabhaNo, String sessionNo,
     		LocalDate fromDate, LocalDate toDate,Long memberId,int page,int size)
     {
 //    	Map<String, List<DashboardBillsDetailsResponseDTO>> response = new HashMap<>();
 		List<DashboardBillsDetailsResponseDTO> dataList = new ArrayList<>();
 		Map<String, Object> response = new HashMap<>();
-		Long houseId = getHouseId();
+//		Long houseId = getHouseId();
 		String houseAbbr = (houseId == 2) ? "LS" : "RS";
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by("date_of_introduction").descending());
