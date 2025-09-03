@@ -83,11 +83,12 @@ public class Dashboard {
     }
     
     @GetMapping("/management-dashboard-bills-count")
-    ResponseEntity<GenericResponse<List<DashboardBillsCountResponseDTO>>> getMgmtDashboardBillsCount(@RequestParam(required = false) String billType,
+    ResponseEntity<GenericResponse<List<DashboardBillsCountResponseDTO>>> getMgmtDashboardBillsCount(@RequestParam(required = true) Long houseId,
+    		@RequestParam(required = false) String billType,
     		@RequestParam(required = false) String lokSabhaNo,
     		@RequestParam(required = false) String sessionNo) {
         GenericResponse<List<DashboardBillsCountResponseDTO>> response =new GenericResponse<>();
-        response.setData(dashboardService.getMgmtDashboardBillsCount(billType,lokSabhaNo,sessionNo));
+        response.setData(dashboardService.getMgmtDashboardBillsCount(houseId,billType,lokSabhaNo,sessionNo));
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("Dashboard Bill counts fetched successfully");
@@ -95,7 +96,8 @@ public class Dashboard {
     }
     
     @GetMapping("/management-dashboard-bill-details")
-    ResponseEntity<GenericResponse<Map<String, Object>>> getMgmtDashboardBillsDetails(@RequestParam(required = false) String billType,
+    ResponseEntity<GenericResponse<Map<String, Object>>> getMgmtDashboardBillsDetails(@RequestParam(required = true) Long houseId,
+    		@RequestParam(required = false) String billType,
     		@RequestParam(required = false) String lokSabhaNo,
     		@RequestParam(required = false) String sessionNo,
     		@RequestParam(required = false) LocalDate fromDate,
@@ -104,7 +106,7 @@ public class Dashboard {
     		@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         GenericResponse<Map<String, Object>> response =new GenericResponse<>();
-        response.setData(dashboardService.getMgmtDashboardBillsDetails(billType,lokSabhaNo,sessionNo,fromDate,toDate,memberId,page,size));
+        response.setData(dashboardService.getMgmtDashboardBillsDetails(houseId,billType,lokSabhaNo,sessionNo,fromDate,toDate,memberId,page,size));
         response.setSuccess(Boolean.TRUE);
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("Dashboard Bill details fetched successfully");

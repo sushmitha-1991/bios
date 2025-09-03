@@ -18,7 +18,7 @@ public interface DashboardService {
 
     List<BillDTO> filterBills(String locale, String billType, String ministry, String status, Long lokSabhaId, Long lokSabhaSessionId, Long rajyaSabhaId, String introducedIn, String passedIn, Long pendingStatus, Boolean isOrdinanceReplacingBill, String referredToCommittee,String introducedBy);
 
-    public List<DashboardBillsCountResponseDTO> getMgmtDashboardBillsCount(String billType, String lokSabhaNo, String sessionNo);
-    public Map<String, Object> getMgmtDashboardBillsDetails(String billType, String lokSabhaNo, String sessionNo,
+    public List<DashboardBillsCountResponseDTO> getMgmtDashboardBillsCount(Long houseId,String billType, String lokSabhaNo, String sessionNo);
+    public Map<String, Object> getMgmtDashboardBillsDetails(Long houseId,String billType, String lokSabhaNo, String sessionNo,
     		LocalDate fromDate, LocalDate toDate,Long memberId,int page,int size);
 }
