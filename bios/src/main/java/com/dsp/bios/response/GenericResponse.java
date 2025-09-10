@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class GenericResponse<T> {
 	private int statusCode;
 	private boolean success;
