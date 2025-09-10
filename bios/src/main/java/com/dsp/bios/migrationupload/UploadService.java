@@ -36,6 +36,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class UploadService {
     @Autowired
     private MigrateFilesLsTempRepository repo;
+
     @Autowired
     private FolderCreationUtils folderCreation;
     @Autowired
@@ -67,7 +68,10 @@ public class UploadService {
             ResponseUuids responseFromUpload = fetchAndUploadFile(res);
             System.out.println(responseFromUpload);
             if (responseFromUpload != null && responseFromUpload.getUploadedUuid() != null)
-                responseUuids.add(responseFromUpload);
+            {
+                    responseUuids.add(responseFromUpload);
+                    continue;
+            }
             else
                 continue;
         }
