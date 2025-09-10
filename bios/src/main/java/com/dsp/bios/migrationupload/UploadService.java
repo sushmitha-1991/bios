@@ -174,7 +174,9 @@ public class UploadService {
             System.out.println("file Name after slash and space update" + fileNameWithoutExt);
             String updatedFileName = fileNameWithoutExt + "_dsp1.pdf";
             // Create a temporary file
-            File tempFile = File.createTempFile(fileNameWithoutExt, ".pdf");
+            File tempFile = File.createTempFile(updatedFileName, ".pdf");
+            System.out.println("updatedFileName file with "+updatedFileName);
+
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 fos.write(fileData);
             }
