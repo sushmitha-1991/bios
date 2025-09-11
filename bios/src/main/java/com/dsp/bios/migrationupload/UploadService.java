@@ -67,12 +67,10 @@ public class UploadService {
             }
             ResponseUuids responseFromUpload = fetchAndUploadFile(res);
             System.out.println(responseFromUpload);
-            if (responseFromUpload != null && responseFromUpload.getUploadedUuid() != null)
-            {
-                    responseUuids.add(responseFromUpload);
-                    continue;
-            }
-            else
+            if (responseFromUpload != null && responseFromUpload.getUploadedUuid() != null) {
+                responseUuids.add(responseFromUpload);
+                continue;
+            } else
                 continue;
         }
         return responseUuids;
@@ -95,7 +93,7 @@ public class UploadService {
         if (fileData == null || fileData.length == 0) {
             logger.warn("File data is null for URL: {}", response.getFileUrl());
 
-          return  mapDataToResp(updateNonUuid(response));
+            return mapDataToResp(updateNonUuid(response));
         }
         // System.out.println("data " + fileData);
         ResponseUuids uuid = uploadAndReturnUuid(response, fileData);
@@ -109,8 +107,7 @@ public class UploadService {
     private ResponseUuids uploadAndReturnUuid(MigrateFilesLsTemp response, byte[] fileData) {
         // TODO Auto-generated method stub
         response = uploadAndReturnUuidLs(response, fileData);
-        if(response==null)
-        {
+        if (response == null) {
             return null;
         }
         return mapDataToResp(response);
@@ -138,6 +135,7 @@ public class UploadService {
             return fileName;
         }
     }
+
     public MigrateFilesLsTemp uploadAndReturnUuidLs(MigrateFilesLsTemp response, byte[] fileData) {
         try {
             String houseAbbr = getHouseAbbr();
@@ -145,7 +143,7 @@ public class UploadService {
             String uploadUrl = openKmUrl + "/document/upload";
             if (fileData == null) {
                 return updateNonUuid(response);
-                
+
             }
             // // Set Authorization Token
             String token = getTokenFromRequest();
@@ -167,7 +165,18 @@ public class UploadService {
             System.out.println("uploadUrl  " + uploadUrl);
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             headers.set("Authorization", "Bearer " + token);
-           
+
+            String originalFileName = response.getFileName();
+            System.out.println("Original file name: " + originalFileName);
+            boolean alreadyUploaded = repo.existsByModuleNameAndFileNameAndFileUuidIsNotNull(
+                    response.getModuleName(),
+                    originalFileName);
+            System.out.println("already uploaded " + alreadyUploaded);
+            // **CHANGE 2: Check if document already exists before uploading**
+            if (alreadyUploaded) {
+                logger.info("File already exists in OpenKM, skipping upload: {}", originalFileName);
+                return updateUploadedData(response, response.getFileUuid()); // mark as already present
+            }
             String fileNameWithoutExt = getFileNameWithOutExtension(response.getFileName());
             System.out.println("file Name before slash and space update" + fileNameWithoutExt);
             if (fileNameWithoutExt.contains("/") || fileNameWithoutExt.contains(" ")) {
@@ -175,11 +184,12 @@ public class UploadService {
                         .replace(" ", "-")
                         .replace("/", "-");
             }
-            System.out.println("file Name after slash and space update" + fileNameWithoutExt);
+            // System.out.println("file Name after slash and space update" +
+            // fileNameWithoutExt);
             String updatedFileName = fileNameWithoutExt + "_dsp1.pdf";
             // Create a temporary file
             File tempFile = File.createTempFile(updatedFileName, ".pdf");
-            System.out.println("updatedFileName file with "+updatedFileName);
+            System.out.println("updatedFileName file with " + updatedFileName);
 
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 fos.write(fileData);
@@ -225,8 +235,10 @@ public class UploadService {
                         String uuidString = generatedUuid.toString().trim();
                         try {
                             UUID uuid = UUID.fromString(uuidString);
+                            System.out.println("before update " + response.getId());
                             response = updateUploadedData(response, "" + uuid);
                             logger.info("entity after saving");
+                            System.out.println("after update " + response);
                             return response;
                         } catch (IllegalArgumentException ex) {
                             logger.error("Invalid UUID format received from OpenKM: {}", uuidString, ex);
@@ -251,8 +263,10 @@ public class UploadService {
     }
 
     private MigrateFilesLsTemp updateUploadedData(MigrateFilesLsTemp response, String uuid) {
+
+        System.out.println("id " + response.getId());
         Optional<MigrateFilesLsTemp> entity = repo
-                .findById(response.getId());
+                .findByIdAndModuleNameAndFileUuidIsNull(response.getId(), response.getModuleName());
         if (entity.isPresent()) {
             MigrateFilesLsTemp entitys = entity.get();
             entitys.setFileUuid(uuid);
@@ -260,6 +274,11 @@ public class UploadService {
             entitys = repo.save(entitys);
             System.out.println("entity " + entitys);
             return entitys;
+        }
+        Optional<MigrateFilesLsTemp> exists = repo
+                .findByIdAndModuleName(response.getId(), response.getModuleName());
+        if (exists.isPresent()) {
+            return exists.get();
         }
         return response;
     }
@@ -275,13 +294,18 @@ public class UploadService {
 
     private MigrateFilesLsTemp updateNonUuid(MigrateFilesLsTemp response) {
         Optional<MigrateFilesLsTemp> entity = repo
-                .findById(response.getId());
+                .findByIdAndModuleNameAndFileUuidIsNull(response.getId(), response.getModuleName());
         if (entity.isPresent()) {
             MigrateFilesLsTemp entitys = entity.get();
             entitys.setIsUpdatedUuid(false);
             entitys = repo.save(entitys);
             System.out.println("entity " + entity);
             return entitys;
+        }
+        Optional<MigrateFilesLsTemp> exists = repo
+                .findByIdAndModuleName(response.getId(), response.getModuleName());
+        if (exists.isPresent()) {
+            return exists.get();
         }
         return response;
     }
@@ -307,6 +331,7 @@ public class UploadService {
             return criteriaBuilder.conjunction(); // Returns a valid Predicate that does not filter anything
         };
     }
+
     public static Specification<MigrateFilesLsTemp> hasHouse(String house) {
         return (root, query, criteriaBuilder) -> {
             if (house != null) {
