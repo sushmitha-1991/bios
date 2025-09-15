@@ -115,6 +115,7 @@ public class UploadService {
 
     public String getHouseAbbr() {
         Long house = utils.getHouseId();
+        // System.out.println(repo.getHouseById(house));
         return repo.getHouseById(house);
     }
 
@@ -267,19 +268,25 @@ public class UploadService {
         System.out.println("id " + response.getId());
         Optional<MigrateFilesLsTemp> entity = repo
                 .findByIdAndModuleNameAndFileUuidIsNull(response.getId(), response.getModuleName());
+
         if (entity.isPresent()) {
             MigrateFilesLsTemp entitys = entity.get();
+            System.out.println("entity " + entitys);
+
             entitys.setFileUuid(uuid);
             entitys.setIsUpdatedUuid(true);
             entitys = repo.save(entitys);
             System.out.println("entity " + entitys);
             return entitys;
         }
-        Optional<MigrateFilesLsTemp> exists = repo
-                .findByIdAndModuleName(response.getId(), response.getModuleName());
-        if (exists.isPresent()) {
-            return exists.get();
+        if (entity.isEmpty()) {
+            Optional<MigrateFilesLsTemp> exists = repo
+                    .findByIdAndModuleName(response.getId(), response.getModuleName());
+            if (exists.isPresent()) {
+                return exists.get();
+            }
         }
+
         return response;
     }
 
