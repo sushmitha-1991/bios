@@ -279,7 +279,8 @@ public class UploadService {
             System.out.println("entity " + entitys);
             return entitys;
         }
-        if (entity.isEmpty()) {
+    else
+    {
             Optional<MigrateFilesLsTemp> exists = repo
                     .findByIdAndModuleName(response.getId(), response.getModuleName());
             if (exists.isPresent()) {
