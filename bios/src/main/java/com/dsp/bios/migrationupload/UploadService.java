@@ -358,7 +358,7 @@ public class UploadService {
 
             String originalFileName = response.getFileName();
             System.out.println("Original file name: " + originalFileName);
-            boolean alreadyUploaded = repo.existsByModuleNameAndFileNameAndFileUuidIsNotNull(
+            boolean alreadyUploaded = repoRs.existsByModuleNameAndFileNameAndFileUuidIsNotNull(
                     response.getModuleName(),
                     originalFileName);
             System.out.println("already uploaded " + alreadyUploaded);
