@@ -65,7 +65,7 @@ public class EntryDataDTO {
 
     private LocalDate dateOfIntroduction;
 
-    private List<LocalDate> datesOfBillTakenIntoConsideration;
+    // private List<LocalDate> datesOfBillTakenIntoConsideration;
 
     private LocalDate dateOfReturnInSecondHouse;
     private String sessionNoReturn;
