@@ -19,4 +19,12 @@ public interface MigrateFilesRsTempRepository extends JpaRepository<MigrateFiles
     Optional<MigrateFilesRsTemp> findByIdAndModuleName(Long id, String moduleName);
 
     Optional<MigrateFilesRsTemp> findByIdAndModuleNameAndFileUuidIsNull(Long id, String moduleName);
+
+    boolean existsByIdAndModuleNameAndFileNameAndFileUuidIsNotNull(Long id, String moduleName, String fileName);    
+
+    Optional<MigrateFilesRsTemp> findByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNull(Long id,
+            String moduleName, String fileName, String fileType);
+
+    boolean existsByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNotNull(Long id, String moduleName,
+            String fileType, String fileName);
 }

@@ -234,9 +234,10 @@ public class UploadService {
 
             String originalFileName = response.getFileName();
             System.out.println("Original file name: " + originalFileName);
-            boolean alreadyUploaded = repo.existsByModuleNameAndFileNameAndFileUuidIsNotNull(
+            boolean alreadyUploaded = repo.existsByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNotNull(response.getId(),
                     response.getModuleName(),
-                    originalFileName);
+                    response.getFileType(),
+                    response.getFileName());
             System.out.println("already uploaded " + alreadyUploaded);
             // **CHANGE 2: Check if document already exists before uploading**
             if (alreadyUploaded) {
@@ -328,6 +329,8 @@ public class UploadService {
         return null;
     }
 
+   
+
     public MigrateFilesRsTemp uploadAndReturnUuidRs(MigrateFilesRsTemp response,
             byte[] fileData) {
         try {
@@ -357,10 +360,12 @@ public class UploadService {
             headers.set("Authorization", "Bearer " + token);
 
             String originalFileName = response.getFileName();
-            System.out.println("Original file name: " + originalFileName);
-            boolean alreadyUploaded = repoRs.existsByModuleNameAndFileNameAndFileUuidIsNotNull(
+            System.out.println("Original file name: " + response.getFileName());
+
+            boolean alreadyUploaded = repoRs.existsByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNotNull(response.getId(),
                     response.getModuleName(),
-                    originalFileName);
+                    response.getFileType(),
+                    response.getFileName());
             System.out.println("already uploaded " + alreadyUploaded);
             // **CHANGE 2: Check if document already exists before uploading**
             if (alreadyUploaded) {
@@ -456,8 +461,8 @@ public class UploadService {
 
         System.out.println("id " + response.getId());
         Optional<MigrateFilesLsTemp> entity = repo
-                .findByIdAndModuleNameAndFileUuidIsNull(response.getId(), response.getModuleName());
-
+                .findByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNull(
+                    response.getId(), response.getModuleName(),response.getFileName(),response.getFileType());
         if (entity.isPresent()) {
             MigrateFilesLsTemp entitys = entity.get();
             System.out.println("entity " + entitys);
@@ -482,7 +487,8 @@ public class UploadService {
 
         System.out.println("id " + response.getId());
         Optional<MigrateFilesRsTemp> entity = repoRs
-                .findByIdAndModuleNameAndFileUuidIsNull(response.getId(), response.getModuleName());
+                .findByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNull(response.getId(),
+                 response.getModuleName(),response.getFileType(),response.getFileName());
 
         if (entity.isPresent()) {
             MigrateFilesRsTemp entitys = entity.get();
@@ -575,6 +581,55 @@ public class UploadService {
         return (root, query, criteriaBuilder) -> {
             if (locale != null) {
                 return criteriaBuilder.equal(root.get("locale"), locale);
+            }
+            return criteriaBuilder.conjunction(); // Returns a valid Predicate that does not filter anything
+        };
+    }
+    public static Specification<MigrateFilesLsTemp> hasFileType(String fileType) {
+        return (root, query, criteriaBuilder) -> {
+            if (fileType != null) {
+                return criteriaBuilder.equal(root.get("fileType"), fileType);
+            }
+            return criteriaBuilder.conjunction(); // Returns a valid Predicate that does not filter anything
+        };
+    }
+    public static Specification<MigrateFilesLsTemp> hasFileName(String fileName) {
+        return (root, query, criteriaBuilder) -> {
+            if (fileName != null) {
+                return criteriaBuilder.equal(root.get("fileName"), fileName);
+            }
+            return criteriaBuilder.conjunction(); // Returns a valid Predicate that does not filter anything
+        };
+    }
+    public static Specification<MigrateFilesLsTemp> hasFileUrl(String fileUrl) {
+        return (root, query, criteriaBuilder) -> {
+            if (fileUrl != null) {
+                return criteriaBuilder.equal(root.get("fileUrl"), fileUrl);
+            }
+            return criteriaBuilder.conjunction(); // Returns a valid Predicate that does not filter anything
+        };
+    }
+
+     public static Specification<MigrateFilesRsTemp> hasFileTypeRs(String fileType) {
+        return (root, query, criteriaBuilder) -> {
+            if (fileType != null) {
+                return criteriaBuilder.equal(root.get("fileType"), fileType);
+            }
+            return criteriaBuilder.conjunction(); // Returns a valid Predicate that does not filter anything
+        };
+    }
+    public static Specification<MigrateFilesRsTemp> hasFileNameRs(String fileName) {
+        return (root, query, criteriaBuilder) -> {
+            if (fileName != null) {
+                return criteriaBuilder.equal(root.get("fileName"), fileName);
+            }
+            return criteriaBuilder.conjunction(); // Returns a valid Predicate that does not filter anything
+        };
+    }
+    public static Specification<MigrateFilesRsTemp> hasFileUrlRs(String fileUrl) {
+        return (root, query, criteriaBuilder) -> {
+            if (fileUrl != null) {
+                return criteriaBuilder.equal(root.get("fileUrl"), fileUrl);
             }
             return criteriaBuilder.conjunction(); // Returns a valid Predicate that does not filter anything
         };

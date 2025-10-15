@@ -14,9 +14,22 @@ public interface MigrateFilesLsTempRepository extends JpaRepository<MigrateFiles
     @Query(value = "select abbr from master.houses where id=:house",nativeQuery = true)
     String getHouseById(Long house);
 
-    boolean existsByModuleNameAndFileNameAndFileUuidIsNotNull(String moduleName, String originalFileName);
+
+    boolean existsByModuleNameAndFileNameAndFileUuidIsNotNull(String moduleName, String fileName);
 
     Optional<MigrateFilesLsTemp> findByIdAndModuleName(Long id, String moduleName);
 
     Optional<MigrateFilesLsTemp> findByIdAndModuleNameAndFileUuidIsNull(Long id, String moduleName);
+Optional<MigrateFilesLsTemp> findByIdAndModuleNameAndFileTypeAndFileUuidIsNull(Long id, String moduleName,
+            String fileType);
+
+
+    boolean existsByIdAndModuleNameAndFileNameAndFileUuidIsNotNull(Long id, String moduleName, String originalFileName);
+
+    Optional<MigrateFilesLsTemp> findByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNull(Long id,
+            String moduleName, String fileName, String fileType);
+
+
+    boolean existsByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNotNull(Long id, String moduleName,
+            String fileType, String fileName);
 }
