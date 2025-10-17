@@ -462,7 +462,7 @@ public class UploadService {
         System.out.println("id " + response.getId());
         Optional<MigrateFilesLsTemp> entity = repo
                 .findByIdAndModuleNameAndFileTypeAndFileNameAndFileUuidIsNull(
-                    response.getId(), response.getModuleName(),response.getFileName(),response.getFileType());
+                    response.getId(), response.getModuleName(),response.getFileType(),response.getFileName());
         if (entity.isPresent()) {
             MigrateFilesLsTemp entitys = entity.get();
             System.out.println("entity " + entitys);
