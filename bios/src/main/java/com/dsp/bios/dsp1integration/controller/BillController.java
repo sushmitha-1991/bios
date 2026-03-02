@@ -1,6 +1,7 @@
 package com.dsp.bios.dsp1integration.controller;
 
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO;
+import com.dsp.bios.dsp1integration.dto.BillStatusCountDto;
 import com.dsp.bios.dsp1integration.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api_ls/business")
@@ -20,7 +22,6 @@ public class BillController {
     public ResponseEntity<BillResponseDTO> getBills(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-
             @RequestParam(required = false) String billNumber,
             @RequestParam(required = false) String billName,
             @RequestParam(required = false) String billType,
@@ -31,7 +32,6 @@ public class BillController {
             @RequestParam(required = false) String billIntroducedBy,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate billIntroducedDate,
             @RequestParam(required = false) String billIntroducedFile,
-
             @RequestParam(required = false) String billPassedInLSDate,
             @RequestParam(required = false) String billPassedInLSFile,
             @RequestParam(required = false) String billPassedInRSDate,
@@ -46,7 +46,6 @@ public class BillController {
             @RequestParam(required = false) String billAssentedDate,
             @RequestParam(required = false) String billGazettedFile,
             @RequestParam(required = false) String billSynopsisFile,
-
             @RequestParam(required = false) String status
     ) {
         BillResponseDTO response = billService.getBills(
@@ -59,4 +58,16 @@ public class BillController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/bill-status")
+    public ResponseEntity<List<String>> getBillStatus() {
+         List<String> response = billService.getBillStatus();
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/bill-status-count")
+    public ResponseEntity<List<BillStatusCountDto>> getBills(@RequestParam String house,
+                                                            @RequestParam(required = false) Long hsNo) {
+         List<BillStatusCountDto> response = billService.getBillStatusCount(house, hsNo);
+        return ResponseEntity.ok(response);
+    }
+
 }

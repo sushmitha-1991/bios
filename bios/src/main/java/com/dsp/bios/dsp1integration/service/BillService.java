@@ -3,6 +3,8 @@ package com.dsp.bios.dsp1integration.service;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO.BillRecord;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO.Metadata;
+import com.dsp.bios.repository.BillStatusRepository;
+import com.dsp.bios.dsp1integration.dto.BillStatusCountDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class BillService {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private BillStatusRepository billStatusRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -184,5 +189,12 @@ public class BillService {
         return null;
     }
 
+    public List<BillStatusCountDto> getBillStatusCount(String house, Long hsNo) {
+        return billStatusRepository.getBillsStatusCount(house);
+    }
+
+    public List<String> getBillStatus() {
+        return billStatusRepository.getStatusList();
+    }
 
 }
