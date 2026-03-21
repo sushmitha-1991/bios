@@ -4,7 +4,9 @@ import com.dsp.bios.dsp1integration.dto.BillResponseDTO;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO.BillRecord;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO.Metadata;
 import com.dsp.bios.repository.BillStatusRepository;
+import com.dsp.bios.util.ConstantsUtil;
 import com.dsp.bios.dsp1integration.dto.BillStatusCountDto;
+import com.dsp.bios.dsp1integration.repo.BillsRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+import org.springframework.util.StringUtils;
 
 @Service
 public class BillService {
@@ -22,6 +25,9 @@ public class BillService {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private BillsRepo billsRepo;
+    
     @Autowired
     private BillStatusRepository billStatusRepository;
 
@@ -41,7 +47,6 @@ public class BillService {
             String status
     ) {
         int offset = (page - 1) * size;
-
         StringBuilder sql = new StringBuilder("""
             SELECT 
                 b.bill_no,
@@ -193,8 +198,173 @@ public class BillService {
         return billStatusRepository.getBillsStatusCount(house);
     }
 
-    public List<String> getBillStatus() {
+    public List<String> getBillStatus(String locale) {
         return billStatusRepository.getStatusList();
     }
 
+    public BillResponseDTO getBillsData(int page, int size, String billNumber, String billName, String billType,
+            String billCategory, String ministryName, Integer billYear, String billStatus,
+            LocalDate billIntroducedDateFrom, LocalDate billIntroducedDateTo, LocalDate billPassedInLSDateFrom,
+            LocalDate billPassedInLSDateTo, LocalDate billPassedInRSDateFrom, LocalDate billPassedInRSDateTo,
+            LocalDate startDate, LocalDate endDate, String locale, String house, String loksabha, Integer session,
+            String memberName, String mpCode, Long billTypeId, String sortOn, String sortBy) {
+
+                    int offset = (page - 1) * size;
+        StringBuilder sql = new StringBuilder("""
+            SELECT 
+                b.bill_no,
+                b.bill_category,
+                b.introduced_by,
+                b.status,
+                b.ministry,
+                b.bill_year,
+                h.house_name AS houseName,
+                b.date_of_introduction,
+                ubt.upload_bill_text
+            FROM bills.bill b
+            LEFT JOIN bills.upload_bill_text ubt ON b.id = ubt.bill_id
+            LEFT JOIN master.houses h ON b.house_abbr = h.abbr
+            WHERE 1 = 1
+        """);
+
+        Map<String, Object> params = new HashMap<>();
+
+        if (billNumber != null && !billNumber.isBlank()) {
+            sql.append(" AND b.bill_no ILIKE :billNumber ");
+            params.put("billNumber", "%" + billNumber + "%");
+        }
+        if (billName != null && !billName.isBlank()) {
+            sql.append(" AND b.bill_category ILIKE :billName ");
+            params.put("billName", "%" + billName + "%");
+        }
+        if (billType != null && !billType.isBlank()) {
+            sql.append(" AND b.introduced_by ILIKE :billType ");
+            params.put("billType", "%" + billType + "%");
+        }
+        if (billCategory != null && !billCategory.isBlank()) {
+            sql.append(" AND b.bill_category ILIKE :billCategory ");
+            params.put("billCategory", "%" + billCategory + "%");
+        }
+        if (ministryName != null && !ministryName.isBlank()) {
+            sql.append(" AND b.ministry ILIKE :ministryName ");
+            params.put("ministryName", "%" + ministryName + "%");
+        }
+        if (billYear != null) {
+            sql.append(" AND b.bill_year = :billYear ");
+            params.put("billYear", billYear);
+        }
+        
+        if (billStatus != null && !billStatus.isBlank()) {
+            sql.append(" AND b.status ILIKE :billStatus ");
+            params.put("billStatus", "%" + billStatus.trim() + "%");
+        }
+        if (billIntroducedDateFrom != null && billIntroducedDateTo != null) {
+            sql.append(" AND b.date_of_introduction BETWEEN :introFrom AND :introTo ");
+            params.put("introFrom", billIntroducedDateFrom);
+            params.put("introTo", billIntroducedDateTo);
+        } else if (billIntroducedDateFrom != null) {
+            sql.append(" AND b.date_of_introduction >= :introFrom ");
+            params.put("introFrom", billIntroducedDateFrom);
+        } else if (billIntroducedDateTo != null) {
+            sql.append(" AND b.date_of_introduction <= :introTo ");
+            params.put("introTo", billIntroducedDateTo);
+        }
+        if (billPassedInLSDateFrom != null && billPassedInLSDateTo != null) {
+            sql.append(" AND b.passed_in_ls_date BETWEEN :lsFrom AND :lsTo ");
+            params.put("lsFrom", billPassedInLSDateFrom);
+            params.put("lsTo", billPassedInLSDateTo);
+        } else if (billPassedInLSDateFrom != null) {
+            sql.append(" AND b.passed_in_ls_date >= :lsFrom ");
+            params.put("lsFrom", billPassedInLSDateFrom);
+        } else if (billPassedInLSDateTo != null) {
+            sql.append(" AND b.passed_in_ls_date <= :lsTo ");
+            params.put("lsTo", billPassedInLSDateTo);
+        }
+        if (billPassedInRSDateFrom != null && billPassedInRSDateTo != null) {
+            sql.append(" AND b.passed_in_rs_date BETWEEN :rsFrom AND :rsTo ");
+            params.put("rsFrom", billPassedInRSDateFrom);
+            params.put("rsTo", billPassedInRSDateTo);
+        } else if (billPassedInRSDateFrom != null) {
+            sql.append(" AND b.passed_in_rs_date >= :rsFrom ");
+            params.put("rsFrom", billPassedInRSDateFrom);
+        } else if (billPassedInRSDateTo != null) {
+            sql.append(" AND b.passed_in_rs_date <= :rsTo ");
+            params.put("rsTo", billPassedInRSDateTo);
+        }
+        if (billTypeId != null) {
+            sql.append(" AND b.bill_type_id = :billTypeId ");
+            params.put("billTypeId", billTypeId);
+        }
+        String dir = ("asc".equalsIgnoreCase(sortBy) ? "ASC" : "DESC");
+        sql.append(" ORDER BY b.date_of_introduction " + dir + " ");
+        sql.append(" LIMIT :limit OFFSET :offset ");
+        params.put("limit", size);
+        params.put("offset", offset);
+        System.out.println(sql.toString());
+        List<BillRecord> records = jdbcTemplate.query(sql.toString(), params, this::mapToRecord);
+        StringBuilder countSql = new StringBuilder("""
+            SELECT COUNT(*)
+            FROM bills.bill b
+            LEFT JOIN master.houses h ON b.house_abbr = h.abbr
+            WHERE 1 = 1
+        """);
+        if (billNumber != null && !billNumber.isBlank()) {
+            countSql.append(" AND b.bill_no ILIKE :billNumber ");
+        }
+        if (billName != null && !billName.isBlank()) {
+            countSql.append(" AND b.bill_category ILIKE :billName ");
+        }
+        if (billType != null && !billType.isBlank()) {
+            countSql.append(" AND b.introduced_by ILIKE :billType ");
+        }
+        if (billCategory != null && !billCategory.isBlank()) {
+            countSql.append(" AND b.bill_category ILIKE :billCategory ");
+        }
+        if (ministryName != null && !ministryName.isBlank()) {
+            countSql.append(" AND b.ministry ILIKE :ministryName ");
+        }
+        if (billYear != null) {
+            countSql.append(" AND b.bill_year = :billYear ");
+        }
+        if (billStatus != null && !billStatus.isBlank()) {
+            countSql.append(" AND b.status ILIKE :billStatus ");
+        }
+        if (billIntroducedDateFrom != null && billIntroducedDateTo != null) {
+            countSql.append(" AND b.date_of_introduction BETWEEN :introFrom AND :introTo ");
+        } else if (billIntroducedDateFrom != null) {
+            countSql.append(" AND b.date_of_introduction >= :introFrom ");
+        } else if (billIntroducedDateTo != null) {
+            countSql.append(" AND b.date_of_introduction <= :introTo ");
+        }
+        if (billPassedInLSDateFrom != null && billPassedInLSDateTo != null) {
+            countSql.append(" AND b.passed_in_ls_date BETWEEN :lsFrom AND :lsTo ");
+        } else if (billPassedInLSDateFrom != null) {
+            countSql.append(" AND b.passed_in_ls_date >= :lsFrom ");
+        } else if (billPassedInLSDateTo != null) {
+            countSql.append(" AND b.passed_in_ls_date <= :lsTo ");
+        }
+        if (billPassedInRSDateFrom != null && billPassedInRSDateTo != null) {
+            countSql.append(" AND b.passed_in_rs_date BETWEEN :rsFrom AND :rsTo ");
+        } else if (billPassedInRSDateFrom != null) {
+            countSql.append(" AND b.passed_in_rs_date >= :rsFrom ");
+        } else if (billPassedInRSDateTo != null) {
+            countSql.append(" AND b.passed_in_rs_date <= :rsTo ");
+        }
+        if (billTypeId != null) {
+            countSql.append(" AND b.bill_type_id = :billTypeId ");
+        }
+        
+        long total = jdbcTemplate.queryForObject(countSql.toString(), params, Long.class);
+        int totalPages = (int) Math.ceil((double) total / size);
+        Metadata metadata = new Metadata(page, size, total, totalPages);
+        return new BillResponseDTO(metadata, records);
+    }
+
+    public List<String> getCategories(String locale) {
+        return billsRepo.getCategoryList();
+    }
+
+    public List<String> getBillTypes() {
+        return billsRepo.getBillTypes();
+    }
 }

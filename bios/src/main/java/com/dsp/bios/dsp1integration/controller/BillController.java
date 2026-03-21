@@ -3,6 +3,7 @@ package com.dsp.bios.dsp1integration.controller;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO;
 import com.dsp.bios.dsp1integration.dto.BillStatusCountDto;
 import com.dsp.bios.dsp1integration.service.BillService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -59,8 +60,8 @@ public class BillController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/bill-status")
-    public ResponseEntity<List<String>> getBillStatus() {
-         List<String> response = billService.getBillStatus();
+    public ResponseEntity<List<String>> getBillStatus(@RequestParam(required = false) String locale) {
+         List<String> response = billService.getBillStatus(locale);
         return ResponseEntity.ok(response);
     }
     @GetMapping("/bill-status-count")
@@ -70,4 +71,52 @@ public class BillController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/bill-categories")
+    public ResponseEntity<List<String>> getCategories(@RequestParam(required = false) String locale) {
+         List<String> response = billService.getCategories(locale);
+        return ResponseEntity.ok(response);
+    }
+
+     @GetMapping("/bill-types")
+    public ResponseEntity<List<String>> getBillTypes() {
+         List<String> response = billService.getBillTypes();
+        return ResponseEntity.ok(response);
+    }
+
+    
+    @GetMapping("/get-bills")
+    ResponseEntity<BillResponseDTO> getBills(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) String billNumber,
+        @RequestParam(required = false) String billName,
+        @RequestParam(required = false) String billType,
+        @RequestParam(required = false) String billCategory,
+        @RequestParam(required = false) String ministryName,
+        @RequestParam(required = false) Integer billYear,
+        @RequestParam(required = false) String billStatus,
+        @RequestParam(required = false) LocalDate billIntroducedDateFrom,
+        @RequestParam(required = false) LocalDate billIntroducedDateTo,
+        @RequestParam(required = false) LocalDate billPassedInLSDateFrom,
+        @RequestParam(required = false) LocalDate billPassedInLSDateTo,
+        @RequestParam(required = false) LocalDate billPassedInRSDateFrom,
+        @RequestParam(required = false) LocalDate billPassedInRSDateTo,
+        @RequestParam(required = false) LocalDate startDate,
+        @RequestParam(required = false) LocalDate endDate,
+        @RequestParam(required = false) String locale,
+        @RequestParam(required = false) String house,
+        @RequestParam(required = false) String loksabha,
+        @RequestParam(required = false) Integer session,
+        @RequestParam(required = false) String memberName,
+        @RequestParam(required = false) String mpCode,
+        @RequestParam(required = false) Long billTypeId,
+        @RequestParam(required = false) String sortOn,
+        @RequestParam(required = false, defaultValue = "ASC") String sortBy)
+    {
+            BillResponseDTO response = billService.getBillsData(page, size,billNumber, billName, billType,
+            billCategory, ministryName, billYear, billStatus, billIntroducedDateFrom, billIntroducedDateTo,
+            billPassedInLSDateFrom, billPassedInLSDateTo, billPassedInRSDateFrom, billPassedInRSDateTo, 
+            startDate, endDate, locale, house, loksabha, session, memberName, mpCode, billTypeId, sortOn, sortBy);
+        return ResponseEntity.ok(response);
+    }
 }
