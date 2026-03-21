@@ -44,6 +44,10 @@ public interface BillsRepo extends JpaRepository<BillStatus, Long> {
     List<String> getBillTypes();
 
 
-    //        select distinct ministry_name from master.ministries m 
+    @Query(value = """
+            select distinct ministry_name from master.ministries m
+            """, nativeQuery = true)
+    List<String> getMinistries();
+      
 
 }

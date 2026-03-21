@@ -83,6 +83,11 @@ public class BillController {
         return ResponseEntity.ok(response);
     }
 
+     @GetMapping("/bill-ministries")
+    public ResponseEntity<List<String>> getMinistries() {
+         List<String> response = billService.getMinistries();
+        return ResponseEntity.ok(response);
+    }
     
     @GetMapping("/get-bills")
     ResponseEntity<BillResponseDTO> getBills(

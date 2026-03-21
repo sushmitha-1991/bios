@@ -364,4 +364,8 @@ public class BillService {
     public List<String> getBillTypes() {
         return billsRepo.getBillTypes();
     }
+
+    public List<String> getMinistries() {
+        return billsRepo.getMinistries();
+    }
 }
