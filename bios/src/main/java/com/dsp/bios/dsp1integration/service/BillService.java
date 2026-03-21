@@ -215,13 +215,15 @@ public class BillService {
                 b.bill_no,
                 b.bill_category,
                 b.introduced_by,
-                b.status,
+                statusCode.code as status, 
                 b.ministry,
                 b.bill_year,
                 h.house_name AS houseName,
                 b.date_of_introduction,
                 ubt.upload_bill_text
             FROM bills.bill b
+             left join bills.bill_status bs on bs.bill_id = b.id 
+            left join master.codes statusCode on bs.bill_status_id = statusCode.id 
             LEFT JOIN bills.upload_bill_text ubt ON b.id = ubt.bill_id
             LEFT JOIN master.houses h ON b.house_abbr = h.abbr
             WHERE 1 = 1
@@ -255,7 +257,7 @@ public class BillService {
         }
         
         if (billStatus != null && !billStatus.isBlank()) {
-            sql.append(" AND b.status ILIKE :billStatus ");
+            sql.append(" AND statusCode.code ILIKE :billStatus ");
             params.put("billStatus", "%" + billStatus.trim() + "%");
         }
         if (billIntroducedDateFrom != null && billIntroducedDateTo != null) {
@@ -291,10 +293,6 @@ public class BillService {
             sql.append(" AND b.passed_in_rs_date <= :rsTo ");
             params.put("rsTo", billPassedInRSDateTo);
         }
-        if (billTypeId != null) {
-            sql.append(" AND b.bill_type_id = :billTypeId ");
-            params.put("billTypeId", billTypeId);
-        }
         String dir = ("asc".equalsIgnoreCase(sortBy) ? "ASC" : "DESC");
         sql.append(" ORDER BY b.date_of_introduction " + dir + " ");
         sql.append(" LIMIT :limit OFFSET :offset ");
@@ -305,6 +303,9 @@ public class BillService {
         StringBuilder countSql = new StringBuilder("""
             SELECT COUNT(*)
             FROM bills.bill b
+            left join bills.bill_status bs on bs.bill_id = b.id 
+            left join master.codes statusCode on bs.bill_status_id = statusCode.id 
+            LEFT JOIN bills.upload_bill_text ubt ON b.id = ubt.bill_id
             LEFT JOIN master.houses h ON b.house_abbr = h.abbr
             WHERE 1 = 1
         """);
@@ -327,7 +328,7 @@ public class BillService {
             countSql.append(" AND b.bill_year = :billYear ");
         }
         if (billStatus != null && !billStatus.isBlank()) {
-            countSql.append(" AND b.status ILIKE :billStatus ");
+            countSql.append(" AND statusCode.code ILIKE :billStatus ");
         }
         if (billIntroducedDateFrom != null && billIntroducedDateTo != null) {
             countSql.append(" AND b.date_of_introduction BETWEEN :introFrom AND :introTo ");
@@ -350,10 +351,6 @@ public class BillService {
         } else if (billPassedInRSDateTo != null) {
             countSql.append(" AND b.passed_in_rs_date <= :rsTo ");
         }
-        if (billTypeId != null) {
-            countSql.append(" AND b.bill_type_id = :billTypeId ");
-        }
-        
         long total = jdbcTemplate.queryForObject(countSql.toString(), params, Long.class);
         int totalPages = (int) Math.ceil((double) total / size);
         Metadata metadata = new Metadata(page, size, total, totalPages);
