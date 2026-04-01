@@ -1,11 +1,16 @@
 package com.dsp.bios.dsp1integration.service;
 
+import com.dsp.bios.dsp1integration.dto.BillCountBySessionDTO;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO.BillRecord;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO.Metadata;
 import com.dsp.bios.repository.BillStatusRepository;
 import com.dsp.bios.util.ConstantsUtil;
 import com.dsp.bios.dsp1integration.dto.BillStatusCountDto;
+import com.dsp.bios.dsp1integration.dto.BillsCountResponseDto;
+import com.dsp.bios.dsp1integration.dto.MetadataDto;
+import com.dsp.bios.dsp1integration.dto.ResponseDTO;
+import com.dsp.bios.dsp1integration.dto.StatusWiseBillDto;
 import com.dsp.bios.dsp1integration.repo.BillsRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -368,4 +373,31 @@ public class BillService {
     public List<String> getMinistries() {
         return billsRepo.getMinistries();
     }
+
+    public Integer getBillParticipation(String mpsno, String lsno) {
+        return billsRepo.getParticipation(mpsno, lsno);
+    }
+        
+    public ResponseDTO getBillByStatus(String status, Integer page, Integer size) {
+        List<Map<String,Object>> resGov = billsRepo.getBillByStatus(status, size, page-1, ConstantsUtil.GOVT);
+        List<Map<String,Object>> resPvt = billsRepo.getBillByStatus(status, size, page-1, ConstantsUtil.PVT);
+        Long totalElements = billsRepo.getCountBillByStatus(status);
+        Integer totalPages = (Integer)totalElements/size;
+        MeatadataDto metaData = new MetadataDto(page, size, totalElements, totalPages);
+        return new ResponseDTO(metaData, mapToRes(resGov, resPvt));
+    }
+
+    public List<StatusWiseBillDto> mapToRes(List<Map<String,Object>> resGov, List<Map<String,Object>> resPvt)
+    {
+        
+    }
+    public BillCountBySessionDTO getBillCountSessionWise(String loksabha, String status, String category, Integer page, Integer size) {
+        List<BillsCountResponseDto> res = billsRepo.getBillBySession(status, size, page-1);
+        Long totalElements = billsRepo.getCountBillBySession(status);
+        Integer totalPages = (Integer)totalElements/size;
+        MeatadataDto metaData = new MetadataDto(page, size, totalElements, totalPages);
+
+        return new BillCountBySessionDTO(metaData, res);
+    }
+    //
 }

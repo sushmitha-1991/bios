@@ -1,7 +1,9 @@
 package com.dsp.bios.dsp1integration.controller;
 
+import com.dsp.bios.dsp1integration.dto.BillCountBySessionDTO;
 import com.dsp.bios.dsp1integration.dto.BillResponseDTO;
 import com.dsp.bios.dsp1integration.dto.BillStatusCountDto;
+import com.dsp.bios.dsp1integration.dto.ResponseDTO;
 import com.dsp.bios.dsp1integration.service.BillService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +90,32 @@ public class BillController {
          List<String> response = billService.getMinistries();
         return ResponseEntity.ok(response);
     }
-    
+
+    @GetMapping("/bill-participation")
+    public ResponseEntity<Integer> getBillParticipation(@RequestParam("mpsno") String mpsno,
+                                                        @RequestParam("loksabha") String lsno) {
+        Integer response = billService.getBillParticipation(mpsno, lsno);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/billcount-sessionwise")
+    public ResponseEntity<BillCountBySessionDTO> getBillCountSessionWise(@RequestParam(required = false) Integer lokSabha,
+                                                                 @RequestParam(required = false) String status,
+                                                                 @RequestParam(required = false) String category,
+                                                                 @RequestParam(required = false) Integer page,
+                                                                 @RequestParam(required = false) Integer size) {
+        BillCountBySessionDTO response = billService.getBillCountSessionWise(lokSabha, status, category, page, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/billcount-by-status")
+    public ResponseEntity<ResponseDTO> getBillCountByStatus(@RequestParam(required = false) String status,
+                                                        @RequestParam(required = false) Integer page,
+                                                        @RequestParam(required = false) Integer size) {
+        ResponseDTO response = billService.getBillCountByStatus(status, page, size);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/get-bills")
     ResponseEntity<BillResponseDTO> getBills(
         @RequestParam(defaultValue = "1") int page,

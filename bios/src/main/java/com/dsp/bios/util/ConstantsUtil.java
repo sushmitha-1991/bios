@@ -6,6 +6,8 @@ public class ConstantsUtil {
     public final static String OKM_ROOT = "/okm:root";
     public final static String BILL_CATEGORY = "BILL_CATEGORY_BIOS";
     public final static String BILL_STATUS = "BILL_STATUS_BIOS";
-
+    public final static String GOVT = "Government";
+    public final static String PVT = "Private Member";
+    
     
 }
