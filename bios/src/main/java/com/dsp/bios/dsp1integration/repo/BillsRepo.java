@@ -58,7 +58,7 @@ public interface BillsRepo extends JpaRepository<BillStatus, Long> {
         where pd.mp_code =:mpsno and lsm.lok_sabha_number = :loksabha
         """, nativeQuery = true)
     Integer getParticipation(@Param("mpsno") String mpsno,
-                             @Param("lsno") String loksabha);
+                             @Param("loksabha") String loksabha);
     @Query(value = """
         SELECT lssm.session_number as session, count(b.*) as count FROM bills.bill b 
         left join master.lok_sabha_masters lsm on lsm.id = b.lok_sabha_number_id 
@@ -77,14 +77,14 @@ public interface BillsRepo extends JpaRepository<BillStatus, Long> {
                             @Param("limit") Integer limit,
                             @Param("offset") Integer offset);
     @Query(value = """
-        SELECT lssm.session_number, count(*)  FROM bills.bill b 
+         SELECT lssm.session_number, count(*)  FROM bills.bill b 
         left join master.lok_sabha_masters lsm on lsm.id = b.lok_sabha_number_id 
-        left join master.lok_sabha_session_masters lssm on lssm.id = b.lok_sabha_session_number_id 
+        inner join master.lok_sabha_session_masters lssm on lssm.id = b.lok_sabha_session_number_id 
         left join bills.bill_status bs on bs.bill_id =b.id 
-        left join master.codes c on c.id = bs.bill_status_id 
-        and c.code = :status and b.lok_sabha_session_number_id is not null 
-        and b.introduced_by =:billType
-        group by lssm.session_number
+        left join master.codes c on c.id = bs.bill_status_id
+        where c.code = :status and b.introduced_by =:billType and  b.lok_sabha_number_id is not null 
+        group by lssm.session_number, lssm.session_number_int 
+        order by lssm.session_number_int desc
         limit :limit offset :offset
                     """, nativeQuery = true)
     List<Map<String, Object>> getBillByStatus(@Param("status") String status,

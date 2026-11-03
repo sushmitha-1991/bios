@@ -98,23 +98,23 @@ public class BillController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/billcount-sessionwise")
-    public ResponseEntity<BillCountBySessionDTO> getBillCountSessionWise(@RequestParam(required = false) Integer lokSabha,
-                                                                 @RequestParam(required = false) String status,
-                                                                 @RequestParam(required = false) String category,
-                                                                 @RequestParam(required = false) Integer page,
-                                                                 @RequestParam(required = false) Integer size) {
-        BillCountBySessionDTO response = billService.getBillCountSessionWise(lokSabha, status, category, page, size);
-        return ResponseEntity.ok(response);
-    }
+    // @GetMapping("/billcount-sessionwise")
+    // public ResponseEntity<BillCountBySessionDTO> getBillCountSessionWise(@RequestParam(required = false) String lokSabha,
+    //                                                                      @RequestParam(required = false) String status,
+    //                                                                      @RequestParam(required = false) String category,
+    //                                                                      @RequestParam(required = false) Integer page,
+    //                                                                      @RequestParam(required = false) Integer size) {
+    //     BillCountBySessionDTO response = billService.getBillCountSessionWise(lokSabha, status, category, page, size);
+    //     return ResponseEntity.ok(response);
+    // }
 
-    @GetMapping("/billcount-by-status")
-    public ResponseEntity<ResponseDTO> getBillCountByStatus(@RequestParam(required = false) String status,
-                                                        @RequestParam(required = false) Integer page,
-                                                        @RequestParam(required = false) Integer size) {
-        ResponseDTO response = billService.getBillCountByStatus(status, page, size);
-        return ResponseEntity.ok(response);
-    }
+    // @GetMapping("/billcount-by-status")
+    // public ResponseEntity<ResponseDTO> getBillCountByStatus(@RequestParam(required = false) String status,
+    //                                                     @RequestParam(required = false) Integer page,
+    //                                                     @RequestParam(required = false) Integer size) {
+    //     ResponseDTO response = billService.getBillCountByStatus(status, page, size);
+    //     return ResponseEntity.ok(response);
+    // }
 
     @GetMapping("/get-bills")
     ResponseEntity<BillResponseDTO> getBills(
@@ -145,10 +145,11 @@ public class BillController {
         @RequestParam(required = false) String sortOn,
         @RequestParam(required = false, defaultValue = "ASC") String sortBy)
     {
-            BillResponseDTO response = billService.getBillsData(page, size,billNumber, billName, billType,
-            billCategory, ministryName, billYear, billStatus, billIntroducedDateFrom, billIntroducedDateTo,
-            billPassedInLSDateFrom, billPassedInLSDateTo, billPassedInRSDateFrom, billPassedInRSDateTo, 
-            startDate, endDate, locale, house, loksabha, session, memberName, mpCode, billTypeId, sortOn, sortBy);
-        return ResponseEntity.ok(response);
+            // BillResponseDTO response = billService.getBillsData(page, size,billNumber, billName, billType,
+            // billCategory, ministryName, billYear, billStatus, billIntroducedDateFrom, billIntroducedDateTo,
+            // billPassedInLSDateFrom, billPassedInLSDateTo, billPassedInRSDateFrom, billPassedInRSDateTo, 
+            // startDate, endDate, locale, house, loksabha, session, memberName, mpCode, billTypeId, sortOn, sortBy);
+        // return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new BillResponseDTO());
     }
 }

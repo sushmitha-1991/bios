@@ -1,15 +1,13 @@
 package com.dsp.bios.dsp1integration.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
 @NoArgsConstructor
 public class BillStatusCountDto {
 

@@ -1,10 +1,13 @@
 package com.dsp.bios.dsp1integration.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
-@Setter
-@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class StatusWiseBillDto {
